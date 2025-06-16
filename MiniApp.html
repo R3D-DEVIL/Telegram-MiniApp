@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Mini App</title>
+  <title>Mini App - Claim Your Reward</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <style>
     body {
@@ -11,9 +11,16 @@
       text-align: center;
       padding: 40px;
     }
+
     h2 {
       color: #333;
     }
+
+    p {
+      font-size: 16px;
+      color: #555;
+    }
+
     button {
       background-color: #0088cc;
       color: white;
@@ -23,7 +30,9 @@
       border-radius: 10px;
       cursor: pointer;
       margin-top: 30px;
+      transition: background-color 0.3s ease;
     }
+
     button:hover {
       background-color: #0077b3;
     }
@@ -31,12 +40,14 @@
 </head>
 <body>
   <h2>🎉 Welcome to the Reward Center!</h2>
-  <p>Click the button below to claim your reward.</p>
+  <p>Click the button below to claim your daily reward.</p>
   <button onclick="openReward()">🎁 Claim Reward</button>
 
   <script>
-    Telegram.WebApp.expand();
+    Telegram.WebApp.expand(); // Makes the mini app fullscreen inside Telegram
+
     function openReward() {
+      // Opens your ad page in an external browser (where ads can run)
       Telegram.WebApp.openLink("https://telegram-mini-app-r3d-devils-projects.vercel.app/adpage.html");
     }
   </script>
