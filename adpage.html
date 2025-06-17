@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Claim Reward - In-App Ad</title>
+  <title>Claim Your Reward</title>
   <style>
     body {
       font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
       text-align: center;
       padding: 40px;
-      background-color: #f5f5f5;
     }
     button {
       font-size: 18px;
@@ -24,62 +24,85 @@
       font-size: 16px;
       color: green;
     }
-    pre {
-      margin-top: 20px;
-      text-align: left;
-      white-space: pre-wrap;
-      background: #eee;
-      padding: 10px;
-      border-radius: 8px;
-      max-height: 150px;
-      overflow-y: auto;
-    }
   </style>
 </head>
 <body>
   <h2>🎁 Watch an ad to claim your reward</h2>
-  <button onclick="claimReward()">Watch Ad</button>
+  <button id="claimBtn">Watch Ad</button>
   <div id="status"></div>
-  <pre id="log"></pre>
 
+  <!-- LibTL SDK -->
   <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
-  <script>
-    function log(msg) {
-      console.log(msg);
-      document.getElementById('log').innerText += msg + '\n';
-    }
 
-    function claimReward() {
-      document.getElementById('status').innerText = "⏳ Showing in-app interstitial ad...";
-      show_9454642({
-        type: 'inApp',
-        inAppSettings: {
-          frequency: 1,
-          capping: 0,
-          interval: 30,
-          timeout: 5,
-          everyPage: false
-        }
-      })
-      .then(() => {
-        document.getElementById('status').innerText = "✅ Reward granted!";
-        log("✅ In-app interstitial ad shown.");
-      })
-      .catch((err) => {
-        document.getElementById('status').innerText = "⚠️ Ad not available or blocked";
-        log("❌ Error showing in-app ad: " + err);
+  <script>
+    const statusEl = document.getElementById('status');
+    const btn = document.getElementById('claimBtn');
+
+    // Disable button until SDK is ready
+    btn.disabled = true;
+    statusEl.innerText = 'Loading ads SDK...';
+
+    // Wait until SDK method is available
+    function waitForSdk() {
+      return new Promise((resolve, reject) => {
+        const maxWait = 10000; // 10 seconds max
+        const intervalTime = 100;
+        let waited = 0;
+
+        const interval = setInterval(() => {
+          if (typeof show_9454642 === 'function') {
+            clearInterval(interval);
+            resolve();
+          } else {
+            waited += intervalTime;
+            if (waited >= maxWait) {
+              clearInterval(interval);
+              reject('SDK failed to load');
+            }
+          }
+        }, intervalTime);
       });
     }
 
-    window.onload = function() {
-      if (typeof show_9454642 !== 'function') {
-        log("⚠️ show_9454642 is not defined.");
-        document.getElementById('status').innerText = "⚠️ SDK not loaded.";
-      } else {
-        log("SDK loaded: show_9454642 is available.");
-        document.getElementById('status').innerText = "Ready to show ad.";
-      }
-    };
+    waitForSdk().then(() => {
+      statusEl.innerText = 'Ads SDK loaded. You can watch the ad now.';
+      btn.disabled = false;
+    }).catch(err => {
+      statusEl.innerText = '⚠️ Error loading ads SDK. Please try again later.';
+      console.error(err);
+    });
+
+    btn.addEventListener('click', () => {
+      statusEl.style.color = 'black';
+      statusEl.innerText = '⏳ Preloading ad...';
+      btn.disabled = true;
+
+      show_9454642({ type: 'preload' })
+        .then(() => {
+          statusEl.innerText = '⏳ Showing ad...';
+          return show_9454642({
+            type: 'inApp',
+            inAppSettings: {
+              frequency: 1,
+              capping: 0,
+              interval: 30,
+              timeout: 5,
+              everyPage: false
+            }
+          });
+        })
+        .then(() => {
+          statusEl.style.color = 'green';
+          statusEl.innerText = '✅ Reward granted! Thanks for watching.';
+          btn.disabled = false;
+        })
+        .catch(err => {
+          statusEl.style.color = 'red';
+          statusEl.innerText = '⚠️ Ad not available or was skipped.';
+          console.error('Ad error:', err);
+          btn.disabled = false;
+        });
+    });
   </script>
 </body>
 </html>
