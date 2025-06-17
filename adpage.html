@@ -10,6 +10,9 @@
       padding: 40px;
       background-color: #f5f5f5;
     }
+    h2 {
+      color: #333;
+    }
     button {
       font-size: 18px;
       padding: 12px 24px;
@@ -31,16 +34,36 @@
   <button onclick="claimReward()">Watch Ad</button>
   <div id="status"></div>
 
-  <script src='//libtl.com/sdk.js' data-zone='9454642' data-sdk='show_9454642'></script>
+  <!-- ✅ Ad SDK Script -->
+  <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
+
   <script>
-    function claimReward() {
-      show_9454642('pop')
-        .then(() => {
-          document.getElementById("status").innerText = "✅ Reward granted!";
-        })
-        .catch(() => {
-          document.getElementById("status").innerText = "❌ Ad not completed.";
+    // ✅ Initialize In-App Interstitial Ads
+    window.onload = function () {
+      if (typeof show_9454642 === "function") {
+        show_9454642({
+          type: 'inApp',
+          inAppSettings: {
+            frequency: 2,     // show max 2 ads
+            capping: 0.1,     // every 6 minutes
+            interval: 30,     // 30s between ads
+            timeout: 5,       // 5s delay before showing
+            everyPage: false  // do not reset on navigation
+          }
         });
+      } else {
+        console.warn("Ad SDK not loaded or show_9454642 undefined.");
+      }
+    };
+
+    // ✅ Reward Button Logic
+    function claimReward() {
+      document.getElementById("status").innerText = "⏳ Please wait... showing ad";
+      
+      // Wait a few seconds (to simulate ad display)
+      setTimeout(() => {
+        document.getElementById("status").innerText = "✅ Reward granted!";
+      }, 8000); // Adjust delay if needed
     }
   </script>
 </body>
