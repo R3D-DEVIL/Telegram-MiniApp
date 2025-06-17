@@ -1,13 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Test Interstitial Ad</title>
+  <meta charset="UTF-8">
+  <title>Claim Reward</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 40px;
       text-align: center;
+      padding: 40px;
+      background-color: #f5f5f5;
+    }
+    h2 {
+      color: #333;
+    }
+    button {
+      font-size: 18px;
+      padding: 12px 24px;
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
     }
     #status {
       margin-top: 20px;
@@ -17,32 +30,49 @@
   </style>
 </head>
 <body>
-  <h2>Interstitial Ad Test</h2>
-  <div id="status">Loading ad...</div>
+  <h2>🎁 Watch an ad to claim your reward</h2>
+  <button onclick="claimReward()">Watch Ad</button>
+  <div id="status">No ad shown yet.</div>
 
-  <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
+  <!-- ✅ LibTL SDK Script -->
+  <script src='https://libtl.com/sdk.js' data-zone='9454642' data-sdk='show_9454642'></script>
 
   <script>
-    window.onload = function () {
-      if (typeof show_9454642 === "function") {
-        show_9454642({
-          type: 'inApp',
-          inAppSettings: {
-            frequency: 2,
-            capping: 0.1,
-            interval: 30,
-            timeout: 5,
-            everyPage: false
-          }
-        }).then(() => {
-          document.getElementById('status').innerText = "✅ Ad shown successfully!";
-        }).catch(() => {
-          document.getElementById('status').innerText = "❌ Ad failed or was skipped.";
+    // ✅ Fallback function if ad fails
+    function showOtherAd() {
+      document.getElementById("status").innerText = "⚠️ Ad not available. Please try again later.";
+    }
+
+    // ✅ Manual ad trigger when user clicks
+    function claimReward() {
+      document.getElementById("status").innerText = "⏳ Loading ad...";
+
+      // Try preloading
+      show_9454642({ type: 'preload' })
+        .then(() => {
+          // Show the preloaded ad
+          show_9454642();
+          // Show reward after short delay
+          setTimeout(() => {
+            document.getElementById("status").innerText = "✅ Reward granted!";
+          }, 6000); // Adjust if needed
+        })
+        .catch(() => {
+          // Fallback if preload fails
+          showOtherAd();
         });
-      } else {
-        document.getElementById('status').innerText = "⚠️ Ad SDK not loaded.";
-      }
-    };
+    }
+
+    // ✅ Auto-show ads every 5 minutes (optional, background logic)
+    setInterval(() => {
+      show_9454642({ type: 'preload' })
+        .then(() => {
+          show_9454642();
+        })
+        .catch(() => {
+          console.warn("Scheduled ad failed to preload.");
+        });
+    }, 1000 * 60 * 5); // Every 5 minutes
   </script>
 </body>
 </html>
