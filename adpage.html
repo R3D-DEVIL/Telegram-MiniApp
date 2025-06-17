@@ -29,7 +29,7 @@
 <body>
   <h2>🎁 Watch an ad to claim your reward</h2>
   <button id="claimBtn">Watch Ad</button>
-  <div id="status"></div>
+  <div id="status">Loading ad system...</div>
 
   <!-- LibTL SDK -->
   <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
@@ -39,67 +39,58 @@
     const btn = document.getElementById('claimBtn');
 
     btn.disabled = true;
-    statusEl.innerText = 'Loading ads SDK...';
 
+    // Wait for SDK to be available
     function waitForSdk() {
       return new Promise((resolve, reject) => {
-        const maxWait = 10000;
-        const intervalTime = 100;
-        let waited = 0;
-
-        const interval = setInterval(() => {
+        let timeout = 0;
+        const check = setInterval(() => {
           if (typeof show_9454642 === 'function') {
-            clearInterval(interval);
+            clearInterval(check);
             resolve();
-          } else {
-            waited += intervalTime;
-            if (waited >= maxWait) {
-              clearInterval(interval);
-              reject('SDK failed to load');
-            }
+          } else if (timeout >= 10000) {
+            clearInterval(check);
+            reject("SDK not loaded");
           }
-        }, intervalTime);
+          timeout += 100;
+        }, 100);
       });
     }
 
     waitForSdk().then(() => {
-      statusEl.innerText = 'Ads SDK loaded. You can watch the ad now.';
       btn.disabled = false;
+      statusEl.innerText = "✅ Ad system ready.";
     }).catch(err => {
-      statusEl.innerText = '⚠️ Error loading ads SDK. Please try again later.';
+      statusEl.innerText = "⚠️ Ad system failed to load.";
       console.error(err);
     });
 
-    btn.addEventListener('click', () => {
-      statusEl.style.color = 'black';
-      statusEl.innerText = '⏳ Preloading ad...';
+    btn.addEventListener("click", () => {
+      statusEl.style.color = "black";
+      statusEl.innerText = "⏳ Showing in-app ad...";
       btn.disabled = true;
 
-      show_9454642({ type: 'preload' })
-        .then(() => {
-          statusEl.innerText = '⏳ Showing ad...';
-          return show_9454642({
-            type: 'inApp',
-            inAppSettings: {
-              frequency: 1,
-              capping: 0,
-              interval: 30,
-              timeout: 15,
-              everyPage: false
-            }
-          });
-        })
-        .then(() => {
-          statusEl.style.color = 'green';
-          statusEl.innerText = '✅ Reward granted! Thanks for watching.';
-          btn.disabled = false;
-        })
-        .catch(err => {
-          statusEl.style.color = 'red';
-          statusEl.innerText = '⚠️ Ad failed or skipped. See console for details.';
-          console.error('Ad error:', err);
-          btn.disabled = false;
-        });
+      show_9454642({
+        type: "inApp",
+        inAppSettings: {
+          frequency: 1,
+          capping: 0,
+          interval: 30,
+          timeout: 15,
+          everyPage: false
+        }
+      })
+      .then(() => {
+        statusEl.style.color = "green";
+        statusEl.innerText = "✅ Reward granted! Thanks for watching.";
+        btn.disabled = false;
+      })
+      .catch(err => {
+        statusEl.style.color = "red";
+        statusEl.innerText = "❌ Ad could not be shown.";
+        console.error("Ad failed:", err);
+        btn.disabled = false;
+      });
     });
   </script>
 </body>
