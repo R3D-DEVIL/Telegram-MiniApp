@@ -44,10 +44,15 @@
   <button onclick="openReward()">🎁 Claim Reward</button>
 
   <script>
-    Telegram.WebApp.expand(); // Makes the mini app fullscreen inside Telegram
+    // Expand to fullscreen inside Telegram Mini App
+    if (window.Telegram && Telegram.WebApp) {
+      Telegram.WebApp.expand();
+    } else {
+      alert("⚠️ Please open this in Telegram Mini App.");
+    }
 
+    // Open external reward page (ad + reward)
     function openReward() {
-      // Opens your ad page in an external browser (where ads can run)
       Telegram.WebApp.openLink("https://telegram-mini-app-r3d-devils-projects.vercel.app/adpage.html");
     }
   </script>
