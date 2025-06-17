@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Claim Your Reward</title>
+  <meta charset="UTF-8">
+  <title>Claim Reward</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
       text-align: center;
       padding: 40px;
+      background-color: #f5f5f5;
     }
     button {
       font-size: 18px;
@@ -28,70 +28,20 @@
 </head>
 <body>
   <h2>🎁 Watch an ad to claim your reward</h2>
-  <button id="claimBtn">Watch Ad</button>
-  <div id="status">Loading ad system...</div>
+  <button onclick="claimReward()">Watch Ad</button>
+  <div id="status"></div>
 
-  <!-- LibTL SDK -->
-  <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
-
+  <script src='//libtl.com/sdk.js' data-zone='9454642' data-sdk='show_9454642'></script>
   <script>
-    const statusEl = document.getElementById('status');
-    const btn = document.getElementById('claimBtn');
-
-    btn.disabled = true;
-
-    // Wait for SDK to be available
-    function waitForSdk() {
-      return new Promise((resolve, reject) => {
-        let timeout = 0;
-        const check = setInterval(() => {
-          if (typeof show_9454642 === 'function') {
-            clearInterval(check);
-            resolve();
-          } else if (timeout >= 10000) {
-            clearInterval(check);
-            reject("SDK not loaded");
-          }
-          timeout += 100;
-        }, 100);
-      });
+    function claimReward() {
+      show_9454642('pop')
+        .then(() => {
+          document.getElementById("status").innerText = "✅ Reward granted!";
+        })
+        .catch(() => {
+          document.getElementById("status").innerText = "❌ Ad not completed.";
+        });
     }
-
-    waitForSdk().then(() => {
-      btn.disabled = false;
-      statusEl.innerText = "✅ Ad system ready.";
-    }).catch(err => {
-      statusEl.innerText = "⚠️ Ad system failed to load.";
-      console.error(err);
-    });
-
-    btn.addEventListener("click", () => {
-      statusEl.style.color = "black";
-      statusEl.innerText = "⏳ Showing in-app ad...";
-      btn.disabled = true;
-
-      show_9454642({
-        type: "inApp",
-        inAppSettings: {
-          frequency: 1,
-          capping: 0,
-          interval: 30,
-          timeout: 15,
-          everyPage: false
-        }
-      })
-      .then(() => {
-        statusEl.style.color = "green";
-        statusEl.innerText = "✅ Reward granted! Thanks for watching.";
-        btn.disabled = false;
-      })
-      .catch(err => {
-        statusEl.style.color = "red";
-        statusEl.innerText = "❌ Ad could not be shown.";
-        console.error("Ad failed:", err);
-        btn.disabled = false;
-      });
-    });
   </script>
 </body>
 </html>
