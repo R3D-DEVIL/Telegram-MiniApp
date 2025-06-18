@@ -57,33 +57,30 @@
   </style>
 </head>
 <body>
-  <!-- Welcome Section -->
   <div id="welcome-section">
     <h2>🎉 Welcome to the Reward Center!</h2>
     <p>Click the button below to choose your ad type and claim your reward.</p>
     <button onclick="showMenu()">🎁 Claim Reward</button>
   </div>
 
-  <!-- Menu Section -->
   <div id="menu-section" class="hidden">
     <h2>🧩 Choose Ad Type</h2>
 
     <button class="menu-button" onclick="showPopup()">1️⃣ Popup Ad</button>
-    <button class="menu-button" onclick="showInApp()">2️⃣ In-App Interstitial</button>
-    <button class="menu-button" onclick="showPreload()">3️⃣ Preload + Show</button>
+    <button class="menu-button" onclick="tryInApp()">2️⃣ In-App Interstitial</button>
+    <button class="menu-button" onclick="tryPreload()">3️⃣ Preload + Show</button>
 
     <div id="status"></div>
   </div>
 
   <script>
     Telegram.WebApp.expand();
+    const status = document.getElementById("status");
 
     function showMenu() {
       document.getElementById("welcome-section").classList.add("hidden");
       document.getElementById("menu-section").classList.remove("hidden");
     }
-
-    const status = document.getElementById("status");
 
     function showPopup() {
       status.innerText = "⏳ Showing popup ad...";
@@ -92,12 +89,12 @@
           status.innerText = "✅ Reward granted!";
         })
         .catch(() => {
-          status.innerText = "❌ Popup ad not completed.";
+          status.innerText = "❌ Ad not completed.";
         });
     }
 
-    function showInApp() {
-      status.innerText = "⏳ Attempting In-App Interstitial...";
+    function tryInApp() {
+      status.innerText = "⏳ Trying in-app ad...";
       show_9454642({
         type: "inApp",
         inAppSettings: {
@@ -109,17 +106,16 @@
         }
       })
         .then(() => {
-          status.innerText = "✅ In-app ad completed!";
+          status.innerText = "✅ In-app ad shown!";
         })
-        .catch(err => {
-          console.error("[In-App] Failed:", err);
-          status.innerText = "⚠️ In-app not supported here. Trying popup...";
+        .catch(() => {
+          status.innerText = "⚠️ In-app failed, showing popup instead...";
           showPopup();
         });
     }
 
-    function showPreload() {
-      status.innerText = "⏳ Preloading ad...";
+    function tryPreload() {
+      status.innerText = "⏳ Trying preload...";
       show_9454642({ type: 'preload' })
         .then(() => {
           status.innerText = "🎬 Showing preloaded ad...";
@@ -128,9 +124,8 @@
         .then(() => {
           status.innerText = "✅ Preloaded ad shown!";
         })
-        .catch(err => {
-          console.error("[Preload] Failed:", err);
-          status.innerText = "⚠️ Preload not supported here. Trying popup...";
+        .catch(() => {
+          status.innerText = "⚠️ Preload failed, showing popup instead...";
           showPopup();
         });
     }
