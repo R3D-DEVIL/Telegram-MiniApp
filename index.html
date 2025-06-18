@@ -77,31 +77,27 @@
 
   <script>
     Telegram.WebApp.expand();
-    const status = document.getElementById("status");
 
     function showMenu() {
       document.getElementById("welcome-section").classList.add("hidden");
       document.getElementById("menu-section").classList.remove("hidden");
     }
 
+    const status = document.getElementById("status");
+
     function showPopup() {
       status.innerText = "⏳ Showing popup ad...";
-      console.log("[Ad] Popup triggered");
       show_9454642('pop')
         .then(() => {
           status.innerText = "✅ Reward granted!";
-          console.log("[Ad] Popup completed");
         })
         .catch(() => {
-          status.innerText = "❌ Ad not completed.";
-          console.warn("[Ad] Popup failed or skipped");
+          status.innerText = "❌ Popup ad not completed.";
         });
     }
 
     function showInApp() {
-      status.innerText = "⏳ Attempting in-app ad...";
-      console.log("[Ad] In-App attempt");
-
+      status.innerText = "⏳ Attempting In-App Interstitial...";
       show_9454642({
         type: "inApp",
         inAppSettings: {
@@ -114,32 +110,27 @@
       })
         .then(() => {
           status.innerText = "✅ In-app ad completed!";
-          console.log("[Ad] In-App ad success");
         })
         .catch(err => {
-          console.error("[Ad] In-App failed, falling back to popup:", err);
-          status.innerText = "❌ In-app ad failed. Trying popup...";
+          console.error("[In-App] Failed:", err);
+          status.innerText = "⚠️ In-app not supported here. Trying popup...";
           showPopup();
         });
     }
 
     function showPreload() {
       status.innerText = "⏳ Preloading ad...";
-      console.log("[Ad] Preload requested");
-
       show_9454642({ type: 'preload' })
         .then(() => {
           status.innerText = "🎬 Showing preloaded ad...";
-          console.log("[Ad] Preload success, now showing...");
           return show_9454642();
         })
         .then(() => {
           status.innerText = "✅ Preloaded ad shown!";
-          console.log("[Ad] Preloaded ad completed");
         })
         .catch(err => {
-          console.error("[Ad] Preload or show failed:", err);
-          status.innerText = "❌ Preloaded ad failed. Trying popup...";
+          console.error("[Preload] Failed:", err);
+          status.innerText = "⚠️ Preload not supported here. Trying popup...";
           showPopup();
         });
     }
