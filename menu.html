@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Choose Ad Type</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f0f0f0;
+    }
+    h2 {
+      margin-bottom: 30px;
+    }
+    button {
+      display: block;
+      margin: 15px auto;
+      padding: 12px 24px;
+      font-size: 16px;
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 250px;
+    }
+    #status {
+      margin-top: 20px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h2>🧩 Choose Ad Type</h2>
+  <button onclick="showPopup()">1️⃣ Popup Ad (New Page)</button>
+  <button onclick="showInApp()">2️⃣ In-App Interstitial</button>
+  <button onclick="showPreload()">3️⃣ Preload + Show</button>
+  <div id="status"></div>
+
+  <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
+  <script>
+    const status = document.getElementById('status');
+
+    function showPopup() {
+      status.innerText = "🔄 Opening popup ad...";
+      window.open("https://your-domain.com/adpage.html", "_blank"); // replace this URL
+    }
+
+    function showInApp() {
+      status.innerText = "⏳ Showing in-app ad...";
+      show_9454642({
+        type: "inApp",
+        inAppSettings: {
+          frequency: 1,
+          capping: 0,
+          interval: 30,
+          timeout: 10,
+          everyPage: false
+        }
+      })
+      .then(() => {
+        status.innerText = "✅ In-app ad completed!";
+      })
+      .catch(err => {
+        status.innerText = "❌ Failed to show in-app ad.";
+        console.error(err);
+      });
+    }
+
+    function showPreload() {
+      status.innerText = "⏳ Preloading ad...";
+      show_9454642({ type: 'preload' })
+        .then(() => {
+          status.innerText = "🎬 Showing ad...";
+          return show_9454642();
+        })
+        .then(() => {
+          status.innerText = "✅ Preloaded ad shown!";
+        })
+        .catch(err => {
+          status.innerText = "❌ Ad preload/show failed.";
+          console.error(err);
+        });
+    }
+  </script>
+</body>
+</html>
