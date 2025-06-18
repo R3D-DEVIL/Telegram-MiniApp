@@ -47,7 +47,8 @@
     Telegram.WebApp.expand();
 
     function openMenu() {
-      Telegram.WebApp.openLink("https://telegram-mini-app-r3d-devils-projects.vercel.app/menu.html");
+      // ✅ Navigate within the same Telegram Mini App webview
+      window.location.href = "menu.html";
     }
   </script>
 </body>
