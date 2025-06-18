@@ -40,20 +40,14 @@
 </head>
 <body>
   <h2>🎉 Welcome to the Reward Center!</h2>
-  <p>Click the button below to claim your daily reward.</p>
-  <button onclick="openReward()">🎁 Claim Reward</button>
+  <p>Click the button below to choose your ad type and claim your reward.</p>
+  <button onclick="openMenu()">🎁 Claim Reward</button>
 
   <script>
-    // Expand to fullscreen inside Telegram Mini App
-    if (window.Telegram && Telegram.WebApp) {
-      Telegram.WebApp.expand();
-    } else {
-      alert("⚠️ Please open this in Telegram Mini App.");
-    }
+    Telegram.WebApp.expand();
 
-    // Open external reward page (ad + reward)
-    function openReward() {
-      Telegram.WebApp.openLink("https://telegram-mini-app-r3d-devils-projects.vercel.app/adpage.html");
+    function openMenu() {
+      Telegram.WebApp.openLink("https://your-domain.com/menu.html");
     }
   </script>
 </body>
