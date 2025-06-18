@@ -37,20 +37,14 @@
     const statusEl = document.getElementById("status");
 
     btn.disabled = true;
-    let sdkReady = false;
 
-    function waitForSDK() {
-      const check = setInterval(() => {
-        if (typeof show_9454642 === "function") {
-          clearInterval(check);
-          btn.disabled = false;
-          statusEl.innerText = "✅ Ad system ready.";
-          sdkReady = true;
-        }
-      }, 200);
-    }
-
-    waitForSDK();
+    const waitForSDK = setInterval(() => {
+      if (typeof show_9454642 === "function") {
+        clearInterval(waitForSDK);
+        btn.disabled = false;
+        statusEl.innerText = "✅ Ad system ready.";
+      }
+    }, 200);
 
     btn.onclick = () => {
       statusEl.innerText = "⏳ Showing ad...";
