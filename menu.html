@@ -32,34 +32,41 @@
   </style>
 </head>
 <body>
-  <h2>🧩 Choose Ad Type</h2>
+  <h2>🧹 Choose Ad Type</h2>
 
-  <button onclick="showPopup()">1️⃣ Popup Ad (New Page)</button>
+  <button onclick="showPopupAd()">1️⃣ Rewarded Popup Ad</button>
   <button onclick="showInApp()">2️⃣ In-App Interstitial</button>
   <button onclick="showPreload()">3️⃣ Preload + Show</button>
 
   <div id="status"></div>
 
-  <!-- ✅ Ad SDK -->
   <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
 
   <script>
     const status = document.getElementById('status');
 
-    function showPopup() {
-      status.innerText = "🔄 Opening popup ad...";
-      window.open("adpage.html", "_blank");
+    function showPopupAd() {
+      status.innerText = "🔄 Showing popup ad...";
+      show_9454642('pop')
+        .then(() => {
+          status.innerText = "✅ Reward granted!";
+          alert("🎉 You watched the ad!");
+        })
+        .catch((e) => {
+          status.innerText = "❌ Ad failed or skipped.";
+          console.warn("Ad failed:", e);
+        });
     }
 
     function showInApp() {
       status.innerText = "⏳ Showing in-app ad...";
       show_9454642({
-        type: "inApp",
+        type: 'inApp',
         inAppSettings: {
-          frequency: 1,
-          capping: 0,
+          frequency: 2,
+          capping: 0.1,
           interval: 30,
-          timeout: 10,
+          timeout: 5,
           everyPage: false
         }
       })
@@ -76,15 +83,15 @@
       status.innerText = "⏳ Preloading ad...";
       show_9454642({ type: 'preload' })
         .then(() => {
-          status.innerText = "🎬 Showing ad...";
+          status.innerText = "🎮 Showing preloaded ad...";
           return show_9454642();
         })
         .then(() => {
           status.innerText = "✅ Preloaded ad shown!";
         })
-        .catch(err => {
+        .catch((e) => {
           status.innerText = "❌ Ad preload/show failed.";
-          console.error(err);
+          console.error(e);
         });
     }
   </script>
