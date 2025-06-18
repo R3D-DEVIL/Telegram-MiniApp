@@ -12,63 +12,54 @@
     }
     h2 {
       margin-bottom: 30px;
-      font-size: 28px;
     }
     button {
       display: block;
-      margin: 20px auto;
-      padding: 16px 32px;
-      font-size: 20px;
+      margin: 15px auto;
+      padding: 12px 24px;
+      font-size: 16px;
       background-color: #0088cc;
       color: white;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       cursor: pointer;
-      width: 300px;
+      width: 250px;
     }
     #status {
-      margin-top: 30px;
-      font-size: 18px;
+      margin-top: 20px;
       color: green;
     }
   </style>
 </head>
 <body>
-  <h2>🧹 Choose Ad Type</h2>
+  <h2>🧩 Choose Ad Type</h2>
 
-  <button onclick="showPopupAd()">1️⃣ Rewarded Popup Ad</button>
+  <button onclick="showPopup()">1️⃣ Popup Ad (New Page)</button>
   <button onclick="showInApp()">2️⃣ In-App Interstitial</button>
   <button onclick="showPreload()">3️⃣ Preload + Show</button>
 
   <div id="status"></div>
 
+  <!-- ✅ Ad SDK -->
   <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
 
   <script>
     const status = document.getElementById('status');
 
-    function showPopupAd() {
-      status.innerText = "🔄 Showing popup ad...";
-      show_9454642('pop')
-        .then(() => {
-          status.innerText = "✅ Reward granted!";
-          alert("🎉 You watched the ad!");
-        })
-        .catch((e) => {
-          status.innerText = "❌ Ad failed or skipped.";
-          console.warn("Ad failed:", e);
-        });
+    function showPopup() {
+      status.innerText = "🔄 Opening popup ad...";
+      window.open("adpage.html", "_blank");
     }
 
     function showInApp() {
       status.innerText = "⏳ Showing in-app ad...";
       show_9454642({
-        type: 'inApp',
+        type: "inApp",
         inAppSettings: {
-          frequency: 2,
-          capping: 0.1,
+          frequency: 1,
+          capping: 0,
           interval: 30,
-          timeout: 5,
+          timeout: 10,
           everyPage: false
         }
       })
@@ -85,15 +76,15 @@
       status.innerText = "⏳ Preloading ad...";
       show_9454642({ type: 'preload' })
         .then(() => {
-          status.innerText = "🎮 Showing preloaded ad...";
+          status.innerText = "🎬 Showing ad...";
           return show_9454642();
         })
         .then(() => {
           status.innerText = "✅ Preloaded ad shown!";
         })
-        .catch((e) => {
+        .catch(err => {
           status.innerText = "❌ Ad preload/show failed.";
-          console.error(e);
+          console.error(err);
         });
     }
   </script>
