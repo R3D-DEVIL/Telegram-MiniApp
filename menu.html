@@ -33,18 +33,22 @@
 </head>
 <body>
   <h2>🧩 Choose Ad Type</h2>
+
   <button onclick="showPopup()">1️⃣ Popup Ad (New Page)</button>
   <button onclick="showInApp()">2️⃣ In-App Interstitial</button>
   <button onclick="showPreload()">3️⃣ Preload + Show</button>
+
   <div id="status"></div>
 
+  <!-- ✅ Ad SDK -->
   <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
+
   <script>
     const status = document.getElementById('status');
 
     function showPopup() {
       status.innerText = "🔄 Opening popup ad...";
-      window.open("https://telegram-mini-app-r3d-devils-projects.vercel.app/adpage.html", "_blank");
+      window.open("adpage.html", "_blank");
     }
 
     function showInApp() {
