@@ -99,7 +99,7 @@
       const cell = document.querySelector(`.cell[data-index='${index}']`);
       cell.innerText = player;
 
-      if (checkWinner(player)) {
+      if (checkWinner(board, player)) {
         document.getElementById("status").innerText = player === "X" ? "🎉 You win!" : "🤖 Bot wins!";
         isGameOver = true;
         show_9454642({ type: "inApp" });
@@ -116,13 +116,13 @@
       document.getElementById("status").innerText = player === "X" ? "🤖 Bot's turn" : "Your turn (X)";
     }
 
-    function checkWinner(player) {
+    function checkWinner(b, player) {
       const wins = [
         [0,1,2],[3,4,5],[6,7,8],
         [0,3,6],[1,4,7],[2,5,8],
         [0,4,8],[2,4,6]
       ];
-      return wins.some(comb => comb.every(i => board[i] === player));
+      return wins.some(comb => comb.every(i => b[i] === player));
     }
 
     function resetGame() {
@@ -147,18 +147,18 @@
       return move;
     }
 
-    function minimax(newBoard, depth, isMaximizing) {
-      if (checkWinner("O")) return 10 - depth;
-      if (checkWinner("X")) return depth - 10;
-      if (!newBoard.includes("")) return 0;
+    function minimax(b, depth, isMaximizing) {
+      if (checkWinner(b, "O")) return 10 - depth;
+      if (checkWinner(b, "X")) return depth - 10;
+      if (!b.includes("")) return 0;
 
       if (isMaximizing) {
         let bestScore = -Infinity;
         for (let i = 0; i < 9; i++) {
-          if (newBoard[i] === "") {
-            newBoard[i] = "O";
-            let score = minimax(newBoard, depth + 1, false);
-            newBoard[i] = "";
+          if (b[i] === "") {
+            b[i] = "O";
+            let score = minimax(b, depth + 1, false);
+            b[i] = "";
             bestScore = Math.max(score, bestScore);
           }
         }
@@ -166,10 +166,10 @@
       } else {
         let bestScore = Infinity;
         for (let i = 0; i < 9; i++) {
-          if (newBoard[i] === "") {
-            newBoard[i] = "X";
-            let score = minimax(newBoard, depth + 1, true);
-            newBoard[i] = "";
+          if (b[i] === "") {
+            b[i] = "X";
+            let score = minimax(b, depth + 1, true);
+            b[i] = "";
             bestScore = Math.min(score, bestScore);
           }
         }
@@ -177,15 +177,14 @@
       }
     }
 
-    // Start game on load
     startGame();
   </script>
 
-  <!-- Simulated ad function -->
+  <!-- Ad function (simulate or real SDK) -->
   <script>
     function show_9454642(options) {
       console.log("Ad shown:", options);
-      // Place your real ad SDK call here
+      // Your real SDK call can go here
     }
   </script>
 </body>
