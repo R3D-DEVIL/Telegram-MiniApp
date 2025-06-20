@@ -1,6 +1,6 @@
 <div>
   <h2>❌⭕ Tic Tac Toe</h2>
-  <table id="board" style="margin: auto; font-size: 32px; border-collapse: collapse;">
+  <table id="board" style="margin:auto; font-size:30px; border-collapse:collapse;">
     <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
     <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
     <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
@@ -10,32 +10,45 @@
 <script>
   let turn = 'X';
   function play(cell) {
-    if (cell.textContent === '') {
-      cell.textContent = turn;
-      if (checkWin(turn)) {
-        document.getElementById('ttt-status').textContent = turn + ' wins!';
-        disableBoard();
-        show_9454642({
-          type: 'inApp',
-          inAppSettings: {
-            frequency: 1,
-            capping: 0,
-            interval: 30,
-            timeout: 2,
-            everyPage: false
-          }
-        });
-        return;
-      }
-      turn = turn === 'X' ? 'O' : 'X';
+    if (cell.textContent || isGameOver()) return;
+    cell.textContent = turn;
+    if (checkWin(turn)) {
+      document.getElementById('ttt-status').textContent = `${turn} wins!`;
+      showAdInApp();
+    } else if (isBoardFull()) {
+      document.getElementById('ttt-status').textContent = `Draw!`;
+      showAdInApp();
+    } else {
+      turn = (turn === 'X') ? 'O' : 'X';
     }
   }
-  function disableBoard() {
-    document.querySelectorAll('#board td').forEach(td => td.onclick = null);
+
+  function isBoardFull() {
+    return [...document.querySelectorAll('#board td')].every(td => td.textContent);
   }
+
+  function isGameOver() {
+    return !!document.getElementById('ttt-status').textContent;
+  }
+
   function checkWin(player) {
-    const td = [...document.querySelectorAll('#board td')].map(td => td.textContent);
-    const winPatterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-    return winPatterns.some(p => p.every(i => td[i] === player));
+    const cells = [...document.querySelectorAll('#board td')].map(td => td.textContent);
+    const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    return wins.some(combo => combo.every(i => cells[i] === player));
+  }
+
+  function showAdInApp() {
+    show_9454642({
+      type: 'inApp',
+      inAppSettings: {
+        frequency: 1,
+        capping: 0,
+        interval: 30,
+        timeout: 2,
+        everyPage: false
+      }
+    })
+    .then(() => console.log("In-app ad shown"))
+    .catch(e => document.getElementById("debug")?.textContent = "Ad failed: " + e);
   }
 </script>
