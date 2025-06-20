@@ -33,7 +33,7 @@
       border-radius: 12px;
       padding: 12px;
       box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-      aspect-ratio: 0.8; /* Width = 80% of height */
+      aspect-ratio: 0.8;
     }
 
     #display {
@@ -55,6 +55,8 @@
     }
 
     .keys button {
+      width: 80%;
+      margin: 0 auto;
       padding: 8px;
       font-size: 14px;
       border: none;
@@ -171,7 +173,7 @@
       try {
         const result = eval(display.textContent);
         display.textContent = result;
-        show_9454642('pop'); // Show ad after calculation
+        show_9454642('pop'); // Show rewarded ad
       } catch (e) {
         display.textContent = "Error";
       }
