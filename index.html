@@ -2,68 +2,72 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Mini App Tools</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mini App - Reward Center</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background-color: #f8f8f8;
-      text-align: center;
+      background-color: #f5f5f5;
       padding: 40px;
+      text-align: center;
     }
-    h2 { color: #333; font-size: 28px; }
+
+    h2 {
+      color: #333;
+      font-size: 28px;
+    }
+
     button {
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      background-color: #0088cc;
       color: white;
       border: none;
       padding: 15px 30px;
       font-size: 18px;
-      border-radius: 12px;
+      border-radius: 10px;
       cursor: pointer;
       margin: 15px auto;
       display: block;
+      width: 260px;
+      transition: background-color 0.3s ease;
     }
+
     button:hover {
-      opacity: 0.9;
+      background-color: #0077b3;
     }
-    #tool-content {
+
+    #content {
       margin-top: 30px;
-    }
-    #debug {
-      color: red;
-      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h2>🛠️ Choose a Tool</h2>
-  <button onclick="openTool('calculator.html')">🧮 Calculator</button>
-  <button onclick="openTool('tictactoe.html')">❌⭕ Tic Tac Toe</button>
-  <button onclick="openTool('todo.html')">📝 To-Do List</button>
+  <h2>🎁 Choose a Feature</h2>
+  <button onclick="loadContent('calculator')">🧮 Calculator</button>
+  <button onclick="loadContent('tictactoe')">❌⭕ Tic Tac Toe</button>
+  <button onclick="loadContent('todo')">📝 To Do List</button>
 
-  <div id="tool-content"></div>
-  <p id="debug"></p>
+  <div id="content"></div>
 
   <script>
     Telegram.WebApp.expand();
 
-    function openTool(file) {
-      document.getElementById("debug").textContent = "";
-      const tc = document.getElementById("tool-content");
-      tc.innerHTML = "⏳ Loading...";
-      fetch(file)
-        .then(r => r.text())
-        .then(html => tc.innerHTML = html)
-        .catch(e => tc.innerHTML = "❌ Load failed", document.getElementById("debug").textContent = e);
-    }
+    function loadContent(page) {
+      fetch(`${page}.html`)
+        .then(res => res.text())
+        .then(html => {
+          const container = document.getElementById("content");
+          container.innerHTML = html;
 
-    // Optional: Manual test button for ad launch
-    function testAd() {
-      show_9454642('pop')
-        .then(() => console.log("Test ad shown"))
-        .catch(e => document.getElementById("debug").textContent = "Ad error: " + e);
+          // Enable inline scripts
+          const scripts = container.querySelectorAll("script");
+          scripts.forEach(script => {
+            const newScript = document.createElement("script");
+            newScript.textContent = script.textContent;
+            script.remove();
+            container.appendChild(newScript);
+          });
+        });
     }
   </script>
 </body>
