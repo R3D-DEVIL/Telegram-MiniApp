@@ -1,21 +1,33 @@
 <div>
   <h2>❌⭕ Tic Tac Toe</h2>
-  <table style="margin: 0 auto;">
+  <table id="board" style="margin: auto; font-size: 32px; border-collapse: collapse;">
     <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
     <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
     <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
   </table>
+  <p id="ttt-status"></p>
+  <button onclick="showAdAfterUse()">🧪 Test Ad</button>
 </div>
 <script>
   let turn = 'X';
   function play(cell) {
     if (cell.textContent === '') {
       cell.textContent = turn;
+      if (checkWin(turn)) {
+        document.getElementById('ttt-status').textContent = turn + ' wins!';
+        showAdAfterUse();
+        disableBoard();
+        return;
+      }
       turn = turn === 'X' ? 'O' : 'X';
     }
-    if ([...document.querySelectorAll('td')].every(td => td.textContent !== '')) {
-      alert("Game Over!");
-      showAdAfterUse();
-    }
+  }
+  function disableBoard() {
+    document.querySelectorAll('#board td').forEach(td => td.onclick = null);
+  }
+  function checkWin(player) {
+    const td = [...document.querySelectorAll('#board td')].map(td => td.textContent);
+    const winPatterns = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    return winPatterns.some(p => p.every(i => td[i] === player));
   }
 </script>
