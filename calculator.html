@@ -10,7 +10,6 @@
   <input type="number" id="num2" placeholder="Second number">
   <button onclick="calculate()">Calculate</button>
   <p id="result"></p>
-  <button onclick="showAdAfterUse()">🧪 Test Ad</button>
 </div>
 <script>
   function calculate() {
@@ -25,6 +24,6 @@
       case '/': result = n2 !== 0 ? n1 / n2 : 'Cannot divide by zero'; break;
     }
     document.getElementById('result').textContent = `Result: ${result}`;
-    showAdAfterUse();
+    show_9454642('pop'); // Rewarded Popup Ad
   }
 </script>
