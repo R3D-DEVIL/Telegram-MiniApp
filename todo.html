@@ -6,20 +6,19 @@
 </div>
 <script>
   function addTodo() {
-    const input = document.getElementById("todoInput");
-    const list = document.getElementById("todoList");
-    if (input.value.trim()) {
-      const li = document.createElement("li");
-      li.textContent = input.value;
-      list.appendChild(li);
-      input.value = "";
+    const input = document.getElementById('todoInput');
+    const text = input.value.trim();
+    if (!text) return;
+    const li = document.createElement('li');
+    li.textContent = text;
+    document.getElementById('todoList').appendChild(li);
+    input.value = '';
+    showAdRewardedInterstitial();
+  }
 
-      // Rewarded Interstitial
-      show_9454642().then(() => {
-        console.log("Rewarded Interstitial shown.");
-      }).catch(() => {
-        console.warn("Ad failed.");
-      });
-    }
+  function showAdRewardedInterstitial() {
+    show_9454642()
+      .then(() => console.log("Rewarded interstitial shown"))
+      .catch(e => document.getElementById("debug")?.textContent = "Ad failed: " + e);
   }
 </script>
