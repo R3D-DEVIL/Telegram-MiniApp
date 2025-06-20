@@ -1,172 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>3D calculator</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-<div id="calc-app">
-  <h2>Calculator</h2>
-  <div id="calc">
-    <div id="display">0</div>
-    <div class="keys">
-      <button onclick="press('7')">7</button>
-      <button onclick="press('8')">8</button>
-      <button onclick="press('9')">9</button>
-      <button class="op" onclick="press('/')">÷</button>
+    body {
+      margin: 0;
+      padding: 10px;
+      background: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-      <button onclick="press('4')">4</button>
-      <button onclick="press('5')">5</button>
-      <button onclick="press('6')">6</button>
-      <button class="op" onclick="press('*')">×</button>
+    #calc-app {
+      width: 100%;
+      max-width: 400px;
+      margin: auto;
+    }
 
-      <button onclick="press('1')">1</button>
-      <button onclick="press('2')">2</button>
-      <button onclick="press('3')">3</button>
-      <button class="op" onclick="press('-')">−</button>
+    h2 {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
 
-      <button onclick="press('0')">0</button>
-      <button onclick="press('.')">.</button>
-      <button class="clear" onclick="clearDisplay()">CE</button>
-      <button class="op" onclick="press('+')">+</button>
-
-      <button class="backspace" onclick="backspace()">⌫</button>
-      <button class="equal" onclick="calculate()">=</button>
-    </div>
-  </div>
-</div>
-
-<style>
-  * {
-    box-sizing: border-box;
-  }
-
-  #calc-app {
-    width: 100%;
-    padding: 6px;
-    font-family: 'Segoe UI', sans-serif;
-    display: flex;
-    justify-content: center;
-  }
-
-  #calc {
-    background: linear-gradient(145deg, #fdfbfb, #ebedee);
-    border-radius: 12px;
-    padding: 10px;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-    height: 90vh;
-    width: 72vh; /* 80% of 90vh */
-    max-width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-
-  #display {
-    background: #222;
-    color: #fff;
-    font-size: 18px;
-    padding: 8px;
-    border-radius: 8px;
-    text-align: right;
-    margin-bottom: 10px;
-    overflow-x: auto;
-    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
-  }
-
-  .keys {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 4px;
-  }
-
-  .keys button {
-    padding: 10px 0;
-    font-size: 12px;
-    border: none;
-    border-radius: 8px;
-    background: linear-gradient(to bottom, #e0e0e0, #c8c8c8);
-    box-shadow: 0 2px #aaa;
-    transition: 0.1s;
-    font-weight: bold;
-    color: #333;
-  }
-
-  .keys button:active {
-    transform: translateY(1px);
-    box-shadow: 0 1px #888;
-  }
-
-  .op {
-    background: linear-gradient(to bottom, #64b5f6, #1976d2);
-    color: white;
-  }
-
-  .clear {
-    background: linear-gradient(to bottom, #ef5350, #c62828);
-    color: white;
-  }
-
-  .backspace {
-    background: linear-gradient(to bottom, #ffd54f, #fbc02d);
-    color: #333;
-    grid-column: span 2;
-  }
-
-  .equal {
-    background: linear-gradient(to bottom, #81c784, #388e3c);
-    color: white;
-    grid-column: span 2;
-  }
-
-  @media (max-width: 500px) {
     #calc {
-      height: 85vh;
-      width: 68vh;
+      background: linear-gradient(145deg, #fdfbfb, #ebedee);
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      aspect-ratio: 0.8; /* Width = 80% of height */
     }
 
     #display {
-      font-size: 16px;
-      padding: 6px;
+      background: #222;
+      color: #fff;
+      font-size: 18px;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: right;
+      margin-bottom: 10px;
+      overflow-x: auto;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .keys {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
     }
 
     .keys button {
-      font-size: 11px;
-      padding: 8px 0;
+      padding: 8px;
+      font-size: 14px;
+      border: none;
+      border-radius: 8px;
+      background: linear-gradient(to bottom, #e0e0e0, #c8c8c8);
+      box-shadow: 0 2px #aaa;
+      transition: 0.1s;
+      font-weight: bold;
+      color: #333;
     }
 
-    #calc-app h2 {
-      font-size: 16px;
+    .keys button:active {
+      transform: translateY(1px);
+      box-shadow: 0 1px #888;
     }
-  }
-</style>
 
-<script>
-  function press(val) {
-    const display = document.querySelector("#display");
-    if (display.textContent === "0" || display.textContent === "Error") {
-      display.textContent = val;
-    } else {
-      display.textContent += val;
+    .op {
+      background: linear-gradient(to bottom, #64b5f6, #1976d2);
+      color: white;
     }
-  }
 
-  function clearDisplay() {
-    document.querySelector("#display").textContent = "0";
-  }
-
-  function backspace() {
-    const display = document.querySelector("#display");
-    let current = display.textContent;
-    if (current === "Error" || current.length <= 1) {
-      display.textContent = "0";
-    } else {
-      display.textContent = current.slice(0, -1);
+    .clear {
+      background: linear-gradient(to bottom, #ef5350, #c62828);
+      color: white;
     }
-  }
 
-  function calculate() {
-    const display = document.querySelector("#display");
-    try {
-      const result = eval(display.textContent);
-      display.textContent = result;
-      show_9454642('pop'); // Rewarded Popup Ad
-    } catch (e) {
-      display.textContent = "Error";
+    .backspace {
+      background: linear-gradient(to bottom, #ffd54f, #fbc02d);
+      color: #333;
+      grid-column: span 2;
     }
-  }
-</script>
+
+    .equal {
+      background: linear-gradient(to bottom, #81c784, #388e3c);
+      color: white;
+      grid-column: span 2;
+    }
+
+    @media (max-width: 400px) {
+      h2 {
+        font-size: 16px;
+      }
+
+      #display {
+        font-size: 16px;
+        padding: 8px;
+      }
+
+      .keys button {
+        font-size: 12px;
+        padding: 6px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="calc-app">
+    <h2>🎨 3D Colorful Calculator</h2>
+    <div id="calc">
+      <div id="display">0</div>
+      <div class="keys">
+        <button onclick="press('7')">7</button>
+        <button onclick="press('8')">8</button>
+        <button onclick="press('9')">9</button>
+        <button class="op" onclick="press('/')">÷</button>
+
+        <button onclick="press('4')">4</button>
+        <button onclick="press('5')">5</button>
+        <button onclick="press('6')">6</button>
+        <button class="op" onclick="press('*')">×</button>
+
+        <button onclick="press('1')">1</button>
+        <button onclick="press('2')">2</button>
+        <button onclick="press('3')">3</button>
+        <button class="op" onclick="press('-')">−</button>
+
+        <button onclick="press('0')">0</button>
+        <button onclick="press('.')">.</button>
+        <button class="clear" onclick="clearDisplay()">CE</button>
+        <button class="op" onclick="press('+')">+</button>
+
+        <button class="backspace" onclick="backspace()">⌫</button>
+        <button class="equal" onclick="calculate()">=</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function press(val) {
+      const display = document.querySelector("#display");
+      if (display.textContent === "0" || display.textContent === "Error") {
+        display.textContent = val;
+      } else {
+        display.textContent += val;
+      }
+    }
+
+    function clearDisplay() {
+      document.querySelector("#display").textContent = "0";
+    }
+
+    function backspace() {
+      const display = document.querySelector("#display");
+      let current = display.textContent;
+      if (current === "Error" || current.length <= 1) {
+        display.textContent = "0";
+      } else {
+        display.textContent = current.slice(0, -1);
+      }
+    }
+
+    function calculate() {
+      const display = document.querySelector("#display");
+      try {
+        const result = eval(display.textContent);
+        display.textContent = result;
+        show_9454642('pop'); // Show ad after calculation
+      } catch (e) {
+        display.textContent = "Error";
+      }
+    }
+  </script>
+</body>
+</html>
