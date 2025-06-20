@@ -1,37 +1,103 @@
-<div>
+<div id="calc-app">
   <h2>🧮 Calculator</h2>
-  <input type="number" id="num1" placeholder="First number">
-  <select id="operator">
-    <option value="+">+</option>
-    <option value="-">−</option>
-    <option value="*">×</option>
-    <option value="/">÷</option>
-  </select>
-  <input type="number" id="num2" placeholder="Second number">
-  <button onclick="calculate()">Calculate</button>
-  <p id="result"></p>
+  <div id="calc">
+    <div id="display">0</div>
+    <div class="keys">
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
+      <button onclick="press('/')">÷</button>
+
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
+      <button onclick="press('*')">×</button>
+
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
+      <button onclick="press('-')">−</button>
+
+      <button onclick="press('0')">0</button>
+      <button onclick="press('.')">.</button>
+      <button onclick="clearDisplay()">CE</button>
+      <button onclick="press('+')">+</button>
+
+      <button class="equal" onclick="calculate()">=</button>
+    </div>
+  </div>
 </div>
+
+<style>
+  #calc-app {
+    max-width: 300px;
+    margin: auto;
+  }
+  #calc {
+    background: #f2f2f2;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  #display {
+    background: #000;
+    color: #fff;
+    font-size: 32px;
+    padding: 15px;
+    text-align: right;
+    overflow-x: auto;
+  }
+  .keys {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .keys button {
+    font-size: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    background: white;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .keys button:hover {
+    background: #e0e0e0;
+  }
+  .equal {
+    grid-column: span 4;
+    background: orange;
+    color: white;
+    font-weight: bold;
+  }
+</style>
+
 <script>
-  function calculate() {
-    const a = parseFloat(document.getElementById('num1').value);
-    const b = parseFloat(document.getElementById('num2').value);
-    const op = document.getElementById('operator').value;
-    let res = a;
-    if (!isNaN(a) && !isNaN(b)) {
-      res = (op === '+') ? a + b :
-            (op === '-') ? a - b :
-            (op === '*') ? a * b :
-            (b !== 0) ? a / b : "Can't divide by zero";
+  let display = document.getElementById("display");
+
+  function press(value) {
+    if (display.textContent === "0") {
+      display.textContent = value;
     } else {
-      res = "Invalid input";
+      display.textContent += value;
     }
-    document.getElementById('result').textContent = `Result: ${res}`;
-    showAdPopup();
   }
 
-  function showAdPopup() {
+  function clearDisplay() {
+    display.textContent = "0";
+  }
+
+  function calculate() {
+    try {
+      const result = eval(display.textContent);
+      display.textContent = result;
+      showAd(); // Show popup ad after calculation
+    } catch (e) {
+      display.textContent = "Error";
+    }
+  }
+
+  function showAd() {
     show_9454642('pop')
       .then(() => console.log("Popup ad shown"))
-      .catch(e => document.getElementById("debug")?.textContent = "Ad failed: " + e);
+      .catch(err => console.warn("Ad error", err));
   }
 </script>
