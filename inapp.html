@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>In-App Interstitial Ad</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background-color: #f9f9f9;
+    }
+    button {
+      font-size: 18px;
+      padding: 12px 24px;
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    #status {
+      margin-top: 20px;
+      font-size: 16px;
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <h2>📢 In-App Interstitial Ad</h2>
+  <button onclick="showAd()">Show Ad</button>
+  <div id="status"></div>
+
+  <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
+  <script>
+    const status = document.getElementById("status");
+
+    function showAd() {
+      status.innerText = "⏳ Showing ad...";
+      show_9454642({
+        type: "inApp",
+        inAppSettings: {
+          frequency: 1,
+          capping: 0,
+          interval: 30,
+          timeout: 5,
+          everyPage: false
+        }
+      })
+      .then(() => {
+        status.innerText = "✅ In-App Ad Completed!";
+      })
+      .catch(() => {
+        status.innerText = "❌ Failed to show ad.";
+      });
+    }
+  </script>
+</body>
+</html>
