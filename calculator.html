@@ -30,7 +30,8 @@
 
 <style>
   #calc-app {
-    max-width: 330px;
+    width: 100%;
+    max-width: 400px;
     margin: auto;
     font-family: Arial, sans-serif;
   }
@@ -40,6 +41,7 @@
     border-radius: 16px;
     box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     overflow: hidden;
+    width: 100%;
   }
 
   #display {
@@ -60,10 +62,11 @@
 
   .keys button {
     font-size: 22px;
-    padding: 20px;
+    padding: 18px;
     border: none;
     cursor: pointer;
     transition: transform 0.1s ease, box-shadow 0.2s ease;
+    width: 100%;
   }
 
   .keys button:active {
@@ -88,43 +91,42 @@
     font-size: 24px;
     font-weight: bold;
   }
+
+  @media (max-width: 360px) {
+    #display {
+      font-size: 28px;
+      padding: 16px;
+    }
+
+    .keys button {
+      font-size: 20px;
+      padding: 16px;
+    }
+  }
 </style>
 
 <script>
-  // These functions dynamically access display when called
-  function press(value) {
+  function press(val) {
     const display = document.querySelector("#display");
-    if (!display) return;
-
     if (display.textContent === "0" || display.textContent === "Error") {
-      display.textContent = value;
+      display.textContent = val;
     } else {
-      display.textContent += value;
+      display.textContent += val;
     }
   }
 
   function clearDisplay() {
-    const display = document.querySelector("#display");
-    if (display) display.textContent = "0";
+    document.querySelector("#display").textContent = "0";
   }
 
   function calculate() {
     const display = document.querySelector("#display");
-    if (!display) return;
-
     try {
       const result = eval(display.textContent);
-      if (!isFinite(result)) throw new Error();
       display.textContent = result;
-      showAd();
+      show_9454642('pop'); // Show popup ad
     } catch {
       display.textContent = "Error";
     }
-  }
-
-  function showAd() {
-    show_9454642('pop')
-      .then(() => console.log("Popup ad shown"))
-      .catch(err => console.warn("Ad failed", err));
   }
 </script>
