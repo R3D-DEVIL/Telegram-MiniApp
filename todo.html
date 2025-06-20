@@ -1,0 +1,19 @@
+<div>
+  <h2>📝 To-Do List</h2>
+  <input type="text" id="todoInput" placeholder="Enter a task">
+  <button onclick="addTodo()">Add</button>
+  <ul id="todoList"></ul>
+</div>
+<script>
+  function addTodo() {
+    const input = document.getElementById("todoInput");
+    const list = document.getElementById("todoList");
+    if (input.value.trim()) {
+      const li = document.createElement("li");
+      li.textContent = input.value;
+      list.appendChild(li);
+      input.value = "";
+      showAdAfterUse();
+    }
+  }
+</script>
