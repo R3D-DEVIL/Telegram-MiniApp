@@ -32,7 +32,6 @@
       box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
     }
     .menu-button { display: block; margin: 15px auto; width: 260px; }
-    .hidden { display: none; }
     #tool-content { margin-top: 20px; }
   </style>
 </head>
@@ -51,11 +50,6 @@
         .then(res => res.text())
         .then(html => { toolContent.innerHTML = html; })
         .catch(() => { toolContent.innerHTML = "<p>❌ Failed to load tool.</p>"; });
-    }
-    function showAdAfterUse() {
-      show_9454642('pop')
-        .then(() => console.log("Ad shown"))
-        .catch(() => console.warn("Ad failed"));
     }
   </script>
 </body>
