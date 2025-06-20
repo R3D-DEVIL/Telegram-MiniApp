@@ -6,7 +6,6 @@
     <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
   </table>
   <p id="ttt-status"></p>
-  <button onclick="showAdAfterUse()">🧪 Test Ad</button>
 </div>
 <script>
   let turn = 'X';
@@ -15,8 +14,17 @@
       cell.textContent = turn;
       if (checkWin(turn)) {
         document.getElementById('ttt-status').textContent = turn + ' wins!';
-        showAdAfterUse();
         disableBoard();
+        show_9454642({
+          type: 'inApp',
+          inAppSettings: {
+            frequency: 1,
+            capping: 0,
+            interval: 30,
+            timeout: 2,
+            everyPage: false
+          }
+        });
         return;
       }
       turn = turn === 'X' ? 'O' : 'X';
