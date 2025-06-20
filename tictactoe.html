@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Smart Bot Tic Tac Toe</title>
+  <title>Tic Tac Toe - Smart Bot</title>
   <style>
     #game {
       max-width: 360px;
@@ -29,6 +29,7 @@
       border-radius: 10px;
       box-shadow: 0 4px #ccc;
       cursor: pointer;
+      user-select: none;
     }
 
     .cell:hover {
@@ -102,14 +103,14 @@
       if (checkWinner(board, player)) {
         document.getElementById("status").innerText = player === "X" ? "🎉 You win!" : "🤖 Bot wins!";
         isGameOver = true;
-        show_9454642({ type: "inApp" });
+        triggerAd();
         return;
       }
 
       if (!board.includes("")) {
         document.getElementById("status").innerText = "🤝 It's a draw!";
         isGameOver = true;
-        show_9454642({ type: "inApp" });
+        triggerAd();
         return;
       }
 
@@ -177,15 +178,15 @@
       }
     }
 
-    startGame();
-  </script>
-
-  <!-- Ad function (simulate or real SDK) -->
-  <script>
-    function show_9454642(options) {
-      console.log("Ad shown:", options);
-      // Your real SDK call can go here
+    function triggerAd() {
+      if (typeof show_9454642 === "function") {
+        setTimeout(() => show_9454642({ type: "inApp" }), 200);
+      } else {
+        console.warn("Ad function show_9454642 not available.");
+      }
     }
+
+    startGame();
   </script>
 </body>
 </html>
