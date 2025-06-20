@@ -1,11 +1,11 @@
 <div>
   <h2>🧮 Calculator</h2>
-  <input type="number" id="num1" placeholder="First number"> 
+  <input type="number" id="num1" placeholder="First number">
   <select id="operator">
     <option value="+">+</option>
-    <option value="-">-</option>
-    <option value="*">*</option>
-    <option value="/">/</option>
+    <option value="-">−</option>
+    <option value="*">×</option>
+    <option value="/">÷</option>
   </select>
   <input type="number" id="num2" placeholder="Second number">
   <button onclick="calculate()">Calculate</button>
@@ -13,17 +13,25 @@
 </div>
 <script>
   function calculate() {
-    const n1 = parseFloat(document.getElementById('num1').value);
-    const n2 = parseFloat(document.getElementById('num2').value);
+    const a = parseFloat(document.getElementById('num1').value);
+    const b = parseFloat(document.getElementById('num2').value);
     const op = document.getElementById('operator').value;
-    let result;
-    switch(op) {
-      case '+': result = n1 + n2; break;
-      case '-': result = n1 - n2; break;
-      case '*': result = n1 * n2; break;
-      case '/': result = n2 !== 0 ? n1 / n2 : 'Cannot divide by zero'; break;
+    let res = a;
+    if (!isNaN(a) && !isNaN(b)) {
+      res = (op === '+') ? a + b :
+            (op === '-') ? a - b :
+            (op === '*') ? a * b :
+            (b !== 0) ? a / b : "Can't divide by zero";
+    } else {
+      res = "Invalid input";
     }
-    document.getElementById('result').textContent = `Result: ${result}`;
-    show_9454642('pop'); // Rewarded Popup Ad
+    document.getElementById('result').textContent = `Result: ${res}`;
+    showAdPopup();
+  }
+
+  function showAdPopup() {
+    show_9454642('pop')
+      .then(() => console.log("Popup ad shown"))
+      .catch(e => document.getElementById("debug")?.textContent = "Ad failed: " + e);
   }
 </script>
