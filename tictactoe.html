@@ -71,7 +71,7 @@
 </head>
 <body>
   <div id="game">
-    <h2>🤖 Tic Tac Toe - Smart Bot</h2>
+    <h2>Tic Tac Toe<br> 🫵🏻 You vs 🤖 Smart Bot</h2>
     <div class="board" id="board"></div>
     <p id="status"></p>
     <button onclick="resetGame()">🔄 Restart</button>
@@ -86,7 +86,7 @@
       boardContainer.innerHTML = "";
       board = Array(9).fill("");
       isGameOver = false;
-      document.getElementById("status").innerText = "Your turn (X)";
+      document.getElementById("status").innerText = " 🫵🏻 Your turn (X)";
 
       for (let i = 0; i < 9; i++) {
         const cell = document.createElement("div");
