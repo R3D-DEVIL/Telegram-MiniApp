@@ -1,5 +1,6 @@
+
 <div id="calc-app">
-  <h2>🎨 3D Colorful Calculator</h2>
+  <h2>Calculator</h2>
   <div id="calc">
     <div id="display">0</div>
     <div class="keys">
@@ -50,8 +51,8 @@
   #display {
     background: #222;
     color: #fff;
-    font-size: 24px;
-    padding: 12px;
+    font-size: 20px;
+    padding: 10px;
     border-radius: 10px;
     text-align: right;
     margin-bottom: 14px;
@@ -62,23 +63,23 @@
   .keys {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 6px;
   }
 
   .keys button {
-    padding: 14px 0;
-    font-size: 18px;
+    padding: 10px 0;
+    font-size: 14px;
     border: none;
     border-radius: 10px;
     background: linear-gradient(to bottom, #e0e0e0, #c8c8c8);
-    box-shadow: 0 3px #aaa;
+    box-shadow: 0 2px #aaa;
     transition: 0.1s;
     font-weight: bold;
     color: #333;
   }
 
   .keys button:active {
-    transform: translateY(2px);
+    transform: translateY(1.5px);
     box-shadow: 0 1px #888;
   }
 
@@ -106,17 +107,17 @@
 
   @media (max-width: 400px) {
     #calc-app h2 {
-      font-size: 20px;
+      font-size: 18px;
     }
 
     #display {
-      font-size: 20px;
-      padding: 10px;
+      font-size: 18px;
+      padding: 8px;
     }
 
     .keys button {
-      font-size: 16px;
-      padding: 12px 0;
+      font-size: 13px;
+      padding: 8px 0;
     }
   }
 </style>
