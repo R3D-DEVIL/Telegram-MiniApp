@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Tic Tac Toe - Smart Bot</title>
   <style>
     #game {
@@ -88,6 +89,7 @@
       makeMove(index, "X");
 
       if (!isGameOver) {
+        document.getElementById("status").innerText = "🤖 Thinking...";
         setTimeout(() => {
           const botIndex = getBestMove();
           if (botIndex !== null) makeMove(botIndex, "O");
@@ -103,14 +105,14 @@
       if (checkWinner(board, player)) {
         document.getElementById("status").innerText = player === "X" ? "🎉 You win!" : "🤖 Bot wins!";
         isGameOver = true;
-        triggerAd(); // Show ad on win
+        showAd(); // Show ad on win/loss
         return;
       }
 
       if (!board.includes("")) {
         document.getElementById("status").innerText = "🤝 It's a draw!";
         isGameOver = true;
-        triggerAd(); // Show ad on draw
+        showAd(); // Show ad on draw
         return;
       }
 
@@ -127,8 +129,9 @@
     }
 
     function resetGame() {
-      triggerAd(); // Show ad on restart
-      startGame();
+      showAd(() => {
+        startGame(); // Start only after ad is shown
+      });
     }
 
     function getBestMove() {
@@ -179,11 +182,28 @@
       }
     }
 
-    function triggerAd() {
+    function showAd(callback) {
       if (typeof show_9454642 === "function") {
-        setTimeout(() => show_9454642({ type: "inApp" }), 200);
+        show_9454642({
+          type: "inApp",
+          inAppSettings: {
+            frequency: 2,
+            capping: 0.1,
+            interval: 30,
+            timeout: 5,
+            everyPage: false
+          }
+        })
+        .then(() => {
+          if (typeof callback === "function") callback();
+        })
+        .catch(() => {
+          console.warn("In-app ad failed.");
+          if (typeof callback === "function") callback();
+        });
       } else {
-        console.warn("Ad function show_9454642 not available.");
+        console.warn("Ad function not found.");
+        if (typeof callback === "function") callback();
       }
     }
 
