@@ -1,5 +1,5 @@
 <div id="calc-app">
-  <h2>🎨 Colorful Calculator</h2>
+  <h2>Calculator</h2>
   <div id="calc">
     <div id="display">0</div>
     <div class="keys">
@@ -71,11 +71,6 @@
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
-  .num {
-    background: #ffffff;
-    color: #333;
-  }
-
   .op {
     background: #b39ddb;
     color: white;
@@ -96,42 +91,34 @@
 </style>
 
 <script>
-  // Define display variable locally in the script
-  let calcDisplay;
-
-  document.addEventListener("DOMContentLoaded", () => {
-    // Wait until calculator is loaded into DOM
-    calcDisplay = document.querySelector("#display");
-    if (!calcDisplay) {
-      console.error("Display element not found.");
-      return;
-    }
-  });
-
+  // These functions dynamically access display when called
   function press(value) {
-    if (!calcDisplay) return;
-    if (calcDisplay.textContent === "0" || calcDisplay.textContent === "Error") {
-      calcDisplay.textContent = value;
+    const display = document.querySelector("#display");
+    if (!display) return;
+
+    if (display.textContent === "0" || display.textContent === "Error") {
+      display.textContent = value;
     } else {
-      calcDisplay.textContent += value;
+      display.textContent += value;
     }
   }
 
   function clearDisplay() {
-    if (calcDisplay) {
-      calcDisplay.textContent = "0";
-    }
+    const display = document.querySelector("#display");
+    if (display) display.textContent = "0";
   }
 
   function calculate() {
-    if (!calcDisplay) return;
+    const display = document.querySelector("#display");
+    if (!display) return;
+
     try {
-      const result = eval(calcDisplay.textContent);
+      const result = eval(display.textContent);
       if (!isFinite(result)) throw new Error();
-      calcDisplay.textContent = result;
-      showAd(); // show ad on success
+      display.textContent = result;
+      showAd();
     } catch {
-      calcDisplay.textContent = "Error";
+      display.textContent = "Error";
     }
   }
 
