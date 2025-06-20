@@ -1,135 +1,192 @@
-
-<div id="game">
-  <h2>🤖 Tic Tac Toe - You vs Bot</h2>
-  <div class="board" id="board"></div>
-  <p id="status"></p>
-  <button onclick="resetGame()">🔄 Restart</button>
-</div>
-
-<style>
-  #game {
-    max-width: 400px;
-    margin: auto;
-    font-family: sans-serif;
-    text-align: center;
-  }
-
-  .board {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 6px;
-    margin-top: 20px;
-  }
-
-  .cell {
-    width: 100px;
-    height: 100px;
-    background: #f0f0f0;
-    font-size: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    box-shadow: 0 4px #ccc;
-    cursor: pointer;
-  }
-
-  .cell:hover {
-    background: #ddd;
-  }
-
-  button {
-    margin-top: 15px;
-    padding: 10px 20px;
-    font-size: 16px;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-
-  #status {
-    font-size: 18px;
-    margin-top: 12px;
-  }
-</style>
-
-<script>
-  let board = [];
-  let isGameOver = false;
-
-  function startGame() {
-    const boardContainer = document.getElementById("board");
-    boardContainer.innerHTML = "";
-    board = Array(9).fill("");
-    isGameOver = false;
-    document.getElementById("status").innerText = "Your turn (X)";
-
-    for (let i = 0; i < 9; i++) {
-      const cell = document.createElement("div");
-      cell.classList.add("cell");
-      cell.dataset.index = i;
-      cell.addEventListener("click", handleMove);
-      boardContainer.appendChild(cell);
-    }
-  }
-
-  function handleMove(e) {
-    const index = e.target.dataset.index;
-    if (board[index] || isGameOver) return;
-
-    makeMove(index, "X");
-
-    if (!isGameOver) {
-      setTimeout(botMove, 400); // slight delay for realism
-    }
-  }
-
-  function makeMove(index, player) {
-    board[index] = player;
-    const cell = document.querySelector(`.cell[data-index='${index}']`);
-    cell.innerText = player;
-
-    if (checkWinner(player)) {
-      document.getElementById("status").innerText = player === "X" ? "🎉 You win!" : "🤖 Bot wins!";
-      isGameOver = true;
-      show_9454642({ type: "inApp" }); // Ad after game
-      return;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Smart Bot Tic Tac Toe</title>
+  <style>
+    #game {
+      max-width: 360px;
+      margin: auto;
+      font-family: sans-serif;
+      text-align: center;
     }
 
-    if (!board.includes("")) {
-      document.getElementById("status").innerText = "🤝 It's a draw!";
-      isGameOver = true;
-      show_9454642({ type: "inApp" });
-      return;
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 20px;
     }
 
-    document.getElementById("status").innerText = player === "X" ? "🤖 Bot's turn" : "Your turn (X)";
-  }
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #f0f0f0;
+      font-size: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      box-shadow: 0 4px #ccc;
+      cursor: pointer;
+    }
 
-  function botMove() {
-    let empty = board.map((val, idx) => val === "" ? idx : null).filter(val => val !== null);
-    if (empty.length === 0 || isGameOver) return;
+    .cell:hover {
+      background: #ddd;
+    }
 
-    const index = empty[Math.floor(Math.random() * empty.length)];
-    makeMove(index, "O");
-  }
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
 
-  function checkWinner(player) {
-    const wins = [
-      [0,1,2],[3,4,5],[6,7,8],
-      [0,3,6],[1,4,7],[2,5,8],
-      [0,4,8],[2,4,6]
-    ];
+    #status {
+      font-size: 18px;
+      margin-top: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <h2>🤖 Tic Tac Toe - Smart Bot</h2>
+    <div class="board" id="board"></div>
+    <p id="status"></p>
+    <button onclick="resetGame()">🔄 Restart</button>
+  </div>
 
-    return wins.some(comb => comb.every(i => board[i] === player));
-  }
+  <script>
+    let board = [];
+    let isGameOver = false;
 
-  function resetGame() {
+    function startGame() {
+      const boardContainer = document.getElementById("board");
+      boardContainer.innerHTML = "";
+      board = Array(9).fill("");
+      isGameOver = false;
+      document.getElementById("status").innerText = "Your turn (X)";
+
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.index = i;
+        cell.addEventListener("click", handleMove);
+        boardContainer.appendChild(cell);
+      }
+    }
+
+    function handleMove(e) {
+      const index = e.target.dataset.index;
+      if (board[index] || isGameOver) return;
+
+      makeMove(index, "X");
+
+      if (!isGameOver) {
+        setTimeout(() => {
+          const botIndex = getBestMove();
+          if (botIndex !== null) makeMove(botIndex, "O");
+        }, 400);
+      }
+    }
+
+    function makeMove(index, player) {
+      board[index] = player;
+      const cell = document.querySelector(`.cell[data-index='${index}']`);
+      cell.innerText = player;
+
+      if (checkWinner(player)) {
+        document.getElementById("status").innerText = player === "X" ? "🎉 You win!" : "🤖 Bot wins!";
+        isGameOver = true;
+        show_9454642({ type: "inApp" });
+        return;
+      }
+
+      if (!board.includes("")) {
+        document.getElementById("status").innerText = "🤝 It's a draw!";
+        isGameOver = true;
+        show_9454642({ type: "inApp" });
+        return;
+      }
+
+      document.getElementById("status").innerText = player === "X" ? "🤖 Bot's turn" : "Your turn (X)";
+    }
+
+    function checkWinner(player) {
+      const wins = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      return wins.some(comb => comb.every(i => board[i] === player));
+    }
+
+    function resetGame() {
+      startGame();
+    }
+
+    function getBestMove() {
+      let bestScore = -Infinity;
+      let move = null;
+
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === "") {
+          board[i] = "O";
+          let score = minimax(board, 0, false);
+          board[i] = "";
+          if (score > bestScore) {
+            bestScore = score;
+            move = i;
+          }
+        }
+      }
+      return move;
+    }
+
+    function minimax(newBoard, depth, isMaximizing) {
+      if (checkWinner("O")) return 10 - depth;
+      if (checkWinner("X")) return depth - 10;
+      if (!newBoard.includes("")) return 0;
+
+      if (isMaximizing) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (newBoard[i] === "") {
+            newBoard[i] = "O";
+            let score = minimax(newBoard, depth + 1, false);
+            newBoard[i] = "";
+            bestScore = Math.max(score, bestScore);
+          }
+        }
+        return bestScore;
+      } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (newBoard[i] === "") {
+            newBoard[i] = "X";
+            let score = minimax(newBoard, depth + 1, true);
+            newBoard[i] = "";
+            bestScore = Math.min(score, bestScore);
+          }
+        }
+        return bestScore;
+      }
+    }
+
+    // Start game on load
     startGame();
-  }
+  </script>
 
-  // Start game on load
-  startGame();
-</script>
+  <!-- Simulated ad function -->
+  <script>
+    function show_9454642(options) {
+      console.log("Ad shown:", options);
+      // Place your real ad SDK call here
+    }
+  </script>
+</body>
+</html>
