@@ -4,48 +4,187 @@
   <meta charset="UTF-8" />
   <title>Tic Tac Toe - Smart Bot</title>
   <style>
-    /* Your existing styles */
+    #game {
+      max-width: 360px;
+      margin: auto;
+      font-family: sans-serif;
+      text-align: center;
+    }
+
+    .board {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      margin-top: 20px;
+    }
+
+    .cell {
+      width: 100px;
+      height: 100px;
+      background: #f0f0f0;
+      font-size: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      box-shadow: 0 4px #ccc;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .cell:hover {
+      background: #ddd;
+    }
+
+    button {
+      margin-top: 15px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    #status {
+      font-size: 18px;
+      margin-top: 12px;
+    }
   </style>
 </head>
 <body>
-  <div id="game">…</div>
-  <!-- your existing HTML -->
+  <div id="game">
+    <h2>🤖 Tic Tac Toe - Smart Bot</h2>
+    <div class="board" id="board"></div>
+    <p id="status"></p>
+    <button onclick="resetGame()">🔄 Restart</button>
+  </div>
+
   <script>
-    /* Your tic-tac-toe logic remains the same */
-    function triggerRewardAd(type = 'inApp') {
-      const adFunc = window.show_9454642 || parent.show_9454642;
-      if (typeof adFunc !== "function") {
-        console.warn("Ad function unavailable");
-        return Promise.reject();
+    let board = [];
+    let isGameOver = false;
+
+    function startGame() {
+      const boardContainer = document.getElementById("board");
+      boardContainer.innerHTML = "";
+      board = Array(9).fill("");
+      isGameOver = false;
+      document.getElementById("status").innerText = "Your turn (X)";
+
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+        cell.dataset.index = i;
+        cell.addEventListener("click", handleMove);
+        boardContainer.appendChild(cell);
+      }
+    }
+
+    function handleMove(e) {
+      const index = e.target.dataset.index;
+      if (board[index] || isGameOver) return;
+
+      makeMove(index, "X");
+
+      if (!isGameOver) {
+        setTimeout(() => {
+          const botIndex = getBestMove();
+          if (botIndex !== null) makeMove(botIndex, "O");
+        }, 400);
+      }
+    }
+
+    function makeMove(index, player) {
+      board[index] = player;
+      const cell = document.querySelector(`.cell[data-index='${index}']`);
+      cell.innerText = player;
+
+      if (checkWinner(board, player)) {
+        document.getElementById("status").innerText = player === "X" ? "🎉 You win!" : "🤖 Bot wins!";
+        isGameOver = true;
+        triggerAd(); // Show ad on win
+        return;
       }
 
-      if (type === 'pop') {
-        return adFunc('pop');
+      if (!board.includes("")) {
+        document.getElementById("status").innerText = "🤝 It's a draw!";
+        isGameOver = true;
+        triggerAd(); // Show ad on draw
+        return;
       }
 
-      return adFunc({ type: 'inApp', inAppSettings: {
-        frequency: 2, capping: 0.1,
-        interval: 30, timeout: 5,
-        everyPage: false
-      }});
+      document.getElementById("status").innerText = player === "X" ? "🤖 Bot's turn" : "Your turn (X)";
     }
 
-    function triggerAdAfterGame() {
-      triggerRewardAd()
-        .then(() => console.log('In-app ad shown'))
-        .catch(() => console.log('Fallback: no ad'));
+    function checkWinner(b, player) {
+      const wins = [
+        [0,1,2],[3,4,5],[6,7,8],
+        [0,3,6],[1,4,7],[2,5,8],
+        [0,4,8],[2,4,6]
+      ];
+      return wins.some(comb => comb.every(i => b[i] === player));
     }
 
-    function triggerAdOnRestart() {
-      triggerRewardAd()
-        .then(() => console.log('Ad shown on Restart'))
-        .catch(() => console.log('Fallback'));
-    }
-
-    function makeMove(...) { /* existing logic, call triggerAdAfterGame() on win/draw */ }
     function resetGame() {
-      triggerAdOnRestart();
+      triggerAd(); // Show ad on restart
       startGame();
+    }
+
+    function getBestMove() {
+      let bestScore = -Infinity;
+      let move = null;
+
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === "") {
+          board[i] = "O";
+          let score = minimax(board, 0, false);
+          board[i] = "";
+          if (score > bestScore) {
+            bestScore = score;
+            move = i;
+          }
+        }
+      }
+      return move;
+    }
+
+    function minimax(b, depth, isMaximizing) {
+      if (checkWinner(b, "O")) return 10 - depth;
+      if (checkWinner(b, "X")) return depth - 10;
+      if (!b.includes("")) return 0;
+
+      if (isMaximizing) {
+        let bestScore = -Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (b[i] === "") {
+            b[i] = "O";
+            let score = minimax(b, depth + 1, false);
+            b[i] = "";
+            bestScore = Math.max(score, bestScore);
+          }
+        }
+        return bestScore;
+      } else {
+        let bestScore = Infinity;
+        for (let i = 0; i < 9; i++) {
+          if (b[i] === "") {
+            b[i] = "X";
+            let score = minimax(b, depth + 1, true);
+            b[i] = "";
+            bestScore = Math.min(score, bestScore);
+          }
+        }
+        return bestScore;
+      }
+    }
+
+    function triggerAd() {
+      if (typeof show_9454642 === "function") {
+        setTimeout(() => show_9454642({ type: "inApp" }), 200);
+      } else {
+        console.warn("Ad function show_9454642 not available.");
+      }
     }
 
     startGame();
