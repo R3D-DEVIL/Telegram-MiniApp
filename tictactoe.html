@@ -17,24 +17,39 @@
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
       margin-top: 20px;
+      background: #cce7ff;
+      padding: 10px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.4);
     }
 
     .cell {
       width: 100px;
       height: 100px;
-      background: #f0f0f0;
+      background: #ffffff;
       font-size: 36px;
+      font-weight: bold;
       display: flex;
       align-items: center;
       justify-content: center;
       border-radius: 10px;
-      box-shadow: 0 4px #ccc;
+      box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.1);
       cursor: pointer;
       user-select: none;
+      transition: background 0.3s, transform 0.2s;
     }
 
     .cell:hover {
-      background: #ddd;
+      background: #e0f0ff;
+      transform: scale(1.03);
+    }
+
+    .cell.x {
+      color: #007bff;
+    }
+
+    .cell.o {
+      color: #e53935;
     }
 
     button {
@@ -101,18 +116,19 @@
       board[index] = player;
       const cell = document.querySelector(`.cell[data-index='${index}']`);
       cell.innerText = player;
+      cell.classList.add(player.toLowerCase());
 
       if (checkWinner(board, player)) {
         document.getElementById("status").innerText = player === "X" ? "🎉 You win!" : "🤖 Bot wins!";
         isGameOver = true;
-        showAd(); // Show ad on win/loss
+        showAd();
         return;
       }
 
       if (!board.includes("")) {
         document.getElementById("status").innerText = "🤝 It's a draw!";
         isGameOver = true;
-        showAd(); // Show ad on draw
+        showAd();
         return;
       }
 
@@ -130,7 +146,7 @@
 
     function resetGame() {
       showAd(() => {
-        startGame(); // Start only after ad is shown
+        startGame();
       });
     }
 
