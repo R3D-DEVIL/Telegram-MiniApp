@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Date Calculator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 30px;
+      background: #f2f2f2;
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-top: 20px;
+      margin-bottom: 5px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 80%;
+      max-width: 300px;
+      margin-bottom: 15px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #0088cc;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background: #0070aa;
+    }
+
+    #result1 {
+      font-size: 22px;
+      color: #333;
+      margin-top: 20px;
+    }
+
+    #sub {
+      font-size: 16px;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>📆 Date Calculator</h1>
+
+  <div>
+    <h2>Start Date</h2>
+    <input type="text" id="startDate" placeholder="e.g. 2025-06-20 or Today" />
+  </div>
+
+  <div>
+    <h2>End Date or Duration</h2>
+    <input type="text" id="endDate" placeholder="e.g. 2025-12-25 or +3 months" />
+  </div>
+
+  <button onclick="calculate()">Calculate</button>
+
+  <div id="result1"></div>
+  <p id="sub"></p>
+
+  <script>
+    function parseDate(input) {
+      input = input.toLowerCase().trim();
+      const today = new Date();
+
+      if (input === "today") return today;
+      if (input === "tomorrow") return new Date(today.getTime() + 86400000);
+
+      let parsed = Date.parse(input);
+      if (!isNaN(parsed)) return new Date(parsed);
+
+      return null;
+    }
+
+    function calculate() {
+      const startInput = document.getElementById("startDate").value;
+      const endInput = document.getElementById("endDate").value;
+      const resultBox = document.getElementById("result1");
+      const subBox = document.getElementById("sub");
+
+      const start = parseDate(startInput);
+      if (!start) {
+        resultBox.textContent = "❌ Invalid start date.";
+        return;
+      }
+
+      let end = parseDate(endInput);
+      if (!end) {
+        try {
+          end = new Date(start.getTime());
+          const parts = endInput.match(/([+-]?\d+)\s*(days?|weeks?|months?|years?)/gi);
+          if (!parts) throw new Error();
+
+          parts.forEach(part => {
+            const [_, val, unit] = part.match(/([+-]?\d+)\s*(\w+)/);
+            const num = parseInt(val);
+
+            switch (unit.toLowerCase()) {
+              case 'day':
+              case 'days':
+                end.setDate(end.getDate() + num);
+                break;
+              case 'week':
+              case 'weeks':
+                end.setDate(end.getDate() + num * 7);
+                break;
+              case 'month':
+              case 'months':
+                end.setMonth(end.getMonth() + num);
+                break;
+              case 'year':
+              case 'years':
+                end.setFullYear(end.getFullYear() + num);
+                break;
+              default:
+                throw new Error();
+            }
+          });
+        } catch {
+          resultBox.textContent = "❌ Invalid end date or duration.";
+          return;
+        }
+      }
+
+      const diff = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+      const formatter = { year: 'numeric', month: 'short', day: 'numeric' };
+      resultBox.textContent = `📅 Result Date: ${end.toLocaleDateString(undefined, formatter)}`;
+      subBox.textContent = `🕒 ${Math.abs(diff)} day${Math.abs(diff) === 1 ? "" : "s"} ${diff >= 0 ? "after" : "before"} start date`;
+
+      // Trigger rewarded ad
+      showAdAfterCalculation();
+    }
+
+    function showAdAfterCalculation() {
+      if (typeof show_9454642 === "function") {
+        show_9454642()
+          .then(() => console.log("Ad shown"))
+          .catch(e => console.warn("Ad failed", e));
+      }
+    }
+  </script>
+</body>
+</html>
