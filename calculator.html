@@ -1,25 +1,25 @@
 <div id="calc-app">
-  <h2>Calculator</h2>
+  <h2>🎨 Colorful Calculator</h2>
   <div id="calc">
     <div id="display">0</div>
     <div class="keys">
-      <button class="num" onclick="press('7')">7</button>
-      <button class="num" onclick="press('8')">8</button>
-      <button class="num" onclick="press('9')">9</button>
+      <button onclick="press('7')">7</button>
+      <button onclick="press('8')">8</button>
+      <button onclick="press('9')">9</button>
       <button class="op" onclick="press('/')">÷</button>
 
-      <button class="num" onclick="press('4')">4</button>
-      <button class="num" onclick="press('5')">5</button>
-      <button class="num" onclick="press('6')">6</button>
+      <button onclick="press('4')">4</button>
+      <button onclick="press('5')">5</button>
+      <button onclick="press('6')">6</button>
       <button class="op" onclick="press('*')">×</button>
 
-      <button class="num" onclick="press('1')">1</button>
-      <button class="num" onclick="press('2')">2</button>
-      <button class="num" onclick="press('3')">3</button>
+      <button onclick="press('1')">1</button>
+      <button onclick="press('2')">2</button>
+      <button onclick="press('3')">3</button>
       <button class="op" onclick="press('-')">−</button>
 
-      <button class="num" onclick="press('0')">0</button>
-      <button class="num" onclick="press('.')">.</button>
+      <button onclick="press('0')">0</button>
+      <button onclick="press('.')">.</button>
       <button class="clear" onclick="clearDisplay()">CE</button>
       <button class="op" onclick="press('+')">+</button>
 
@@ -96,34 +96,48 @@
 </style>
 
 <script>
-  let display = document.getElementById("display");
+  // Define display variable locally in the script
+  let calcDisplay;
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Wait until calculator is loaded into DOM
+    calcDisplay = document.querySelector("#display");
+    if (!calcDisplay) {
+      console.error("Display element not found.");
+      return;
+    }
+  });
 
   function press(value) {
-    if (display.textContent === "0" || display.textContent === "Error") {
-      display.textContent = value;
+    if (!calcDisplay) return;
+    if (calcDisplay.textContent === "0" || calcDisplay.textContent === "Error") {
+      calcDisplay.textContent = value;
     } else {
-      display.textContent += value;
+      calcDisplay.textContent += value;
     }
   }
 
   function clearDisplay() {
-    display.textContent = "0";
+    if (calcDisplay) {
+      calcDisplay.textContent = "0";
+    }
   }
 
   function calculate() {
+    if (!calcDisplay) return;
     try {
-      let result = eval(display.textContent);
+      const result = eval(calcDisplay.textContent);
       if (!isFinite(result)) throw new Error();
-      display.textContent = result;
-      showAd(); // Show ad after calculation
+      calcDisplay.textContent = result;
+      showAd(); // show ad on success
     } catch {
-      display.textContent = "Error";
+      calcDisplay.textContent = "Error";
     }
   }
 
   function showAd() {
     show_9454642('pop')
       .then(() => console.log("Popup ad shown"))
-      .catch(err => console.warn("Ad error", err));
+      .catch(err => console.warn("Ad failed", err));
   }
 </script>
