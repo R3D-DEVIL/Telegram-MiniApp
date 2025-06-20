@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini App Tools</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      text-align: center;
+      padding: 40px;
+    }
+    h2 { color: #333; font-size: 28px; }
+    p { font-size: 18px; color: #555; }
+    button {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: pulse 2s infinite;
+      box-shadow: 0 4px 15px rgba(0, 114, 255, 0.3);
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(0, 114, 255, 0.4);
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 114, 255, 0.5); }
+      70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(0, 114, 255, 0); }
+      100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(0, 114, 255, 0); }
+    }
+    .menu-button { display: block; margin: 15px auto; width: 260px; }
+    .hidden { display: none; }
+    #tool-content { margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h2>🛠️ Choose a Tool</h2>
+  <button class="menu-button" onclick="openTool('calculator.html')">🧮 Calculator</button>
+  <button class="menu-button" onclick="openTool('tictactoe.html')">❌⭕ Tic Tac Toe</button>
+  <button class="menu-button" onclick="openTool('todo.html')">📝 To-Do List</button>
+  <div id="tool-content"></div>
+  <script>
+    Telegram.WebApp.expand();
+    function openTool(file) {
+      const toolContent = document.getElementById("tool-content");
+      toolContent.innerHTML = "<p>⏳ Loading...</p>";
+      fetch(file)
+        .then(res => res.text())
+        .then(html => { toolContent.innerHTML = html; })
+        .catch(() => { toolContent.innerHTML = "<p>❌ Failed to load tool.</p>"; });
+    }
+    function showAdAfterUse() {
+      show_9454642('pop')
+        .then(() => console.log("Ad shown"))
+        .catch(() => console.warn("Ad failed"));
+    }
+  </script>
+</body>
+</html>
