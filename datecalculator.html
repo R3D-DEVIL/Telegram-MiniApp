@@ -74,12 +74,28 @@
     <input type="text" id="endDate" placeholder="e.g. 2025-12-25 or +3 months" />
   </div>
 
-  <button onclick="calculate()">Calculate</button>
+  <button onclick="triggerAdBeforeCalculation()">Calculate</button>
 
   <div id="result1"></div>
   <p id="sub"></p>
 
   <script>
+    function triggerAdBeforeCalculation() {
+      if (typeof show_9454642 === "function") {
+        show_9454642()
+          .then(() => {
+            console.log("Ad shown successfully");
+            calculate(); // Only calculate after ad is watched
+          })
+          .catch(err => {
+            console.warn("Ad skipped or failed:", err);
+            alert("⚠️ You must watch the ad to unlock calculation.");
+          });
+      } else {
+        alert("Ad service not available. Try again later.");
+      }
+    }
+
     function parseDate(input) {
       input = input.toLowerCase().trim();
       const today = new Date();
@@ -147,17 +163,6 @@
       const formatter = { year: 'numeric', month: 'short', day: 'numeric' };
       resultBox.textContent = `📅 Result Date: ${end.toLocaleDateString(undefined, formatter)}`;
       subBox.textContent = `🕒 ${Math.abs(diff)} day${Math.abs(diff) === 1 ? "" : "s"} ${diff >= 0 ? "after" : "before"} start date`;
-
-      // Trigger rewarded ad
-      showAdAfterCalculation();
-    }
-
-    function showAdAfterCalculation() {
-      if (typeof show_9454642 === "function") {
-        show_9454642()
-          .then(() => console.log("Ad shown"))
-          .catch(e => console.warn("Ad failed", e));
-      }
     }
   </script>
 </body>
