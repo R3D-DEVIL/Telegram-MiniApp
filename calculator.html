@@ -1,27 +1,27 @@
 <div id="calc-app">
-  <h2>🧮 Calculator</h2>
+  <h2>Calculator</h2>
   <div id="calc">
     <div id="display">0</div>
     <div class="keys">
-      <button onclick="press('7')">7</button>
-      <button onclick="press('8')">8</button>
-      <button onclick="press('9')">9</button>
-      <button onclick="press('/')">÷</button>
+      <button class="num" onclick="press('7')">7</button>
+      <button class="num" onclick="press('8')">8</button>
+      <button class="num" onclick="press('9')">9</button>
+      <button class="op" onclick="press('/')">÷</button>
 
-      <button onclick="press('4')">4</button>
-      <button onclick="press('5')">5</button>
-      <button onclick="press('6')">6</button>
-      <button onclick="press('*')">×</button>
+      <button class="num" onclick="press('4')">4</button>
+      <button class="num" onclick="press('5')">5</button>
+      <button class="num" onclick="press('6')">6</button>
+      <button class="op" onclick="press('*')">×</button>
 
-      <button onclick="press('1')">1</button>
-      <button onclick="press('2')">2</button>
-      <button onclick="press('3')">3</button>
-      <button onclick="press('-')">−</button>
+      <button class="num" onclick="press('1')">1</button>
+      <button class="num" onclick="press('2')">2</button>
+      <button class="num" onclick="press('3')">3</button>
+      <button class="op" onclick="press('-')">−</button>
 
-      <button onclick="press('0')">0</button>
-      <button onclick="press('.')">.</button>
-      <button onclick="clearDisplay()">CE</button>
-      <button onclick="press('+')">+</button>
+      <button class="num" onclick="press('0')">0</button>
+      <button class="num" onclick="press('.')">.</button>
+      <button class="clear" onclick="clearDisplay()">CE</button>
+      <button class="op" onclick="press('+')">+</button>
 
       <button class="equal" onclick="calculate()">=</button>
     </div>
@@ -30,42 +30,67 @@
 
 <style>
   #calc-app {
-    max-width: 300px;
+    max-width: 330px;
     margin: auto;
+    font-family: Arial, sans-serif;
   }
+
   #calc {
-    background: #f2f2f2;
-    border-radius: 12px;
-    box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    background: linear-gradient(135deg, #ffe6f0, #e0f7fa);
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     overflow: hidden;
   }
+
   #display {
-    background: #000;
+    background: #1c1c1c;
     color: #fff;
-    font-size: 32px;
-    padding: 15px;
+    font-size: 36px;
+    padding: 20px;
     text-align: right;
+    border-top-left-radius: 16px;
+    border-top-right-radius: 16px;
     overflow-x: auto;
   }
+
   .keys {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
   }
+
   .keys button {
-    font-size: 20px;
+    font-size: 22px;
     padding: 20px;
-    border: 1px solid #ccc;
-    background: white;
+    border: none;
     cursor: pointer;
-    transition: background 0.2s;
+    transition: transform 0.1s ease, box-shadow 0.2s ease;
   }
-  .keys button:hover {
-    background: #e0e0e0;
+
+  .keys button:active {
+    transform: scale(0.95);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
   }
+
+  .num {
+    background: #ffffff;
+    color: #333;
+  }
+
+  .op {
+    background: #b39ddb;
+    color: white;
+  }
+
+  .clear {
+    background: #ff8a65;
+    color: white;
+  }
+
   .equal {
     grid-column: span 4;
-    background: orange;
+    background: #4db6ac;
     color: white;
+    font-size: 24px;
     font-weight: bold;
   }
 </style>
@@ -74,7 +99,7 @@
   let display = document.getElementById("display");
 
   function press(value) {
-    if (display.textContent === "0") {
+    if (display.textContent === "0" || display.textContent === "Error") {
       display.textContent = value;
     } else {
       display.textContent += value;
@@ -87,10 +112,11 @@
 
   function calculate() {
     try {
-      const result = eval(display.textContent);
+      let result = eval(display.textContent);
+      if (!isFinite(result)) throw new Error();
       display.textContent = result;
-      showAd(); // Show popup ad after calculation
-    } catch (e) {
+      showAd(); // Show ad after calculation
+    } catch {
       display.textContent = "Error";
     }
   }
