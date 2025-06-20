@@ -57,18 +57,20 @@
   </style>
 </head>
 <body>
+  <!-- Welcome Section -->
   <div id="welcome-section">
     <h2>🎉 Welcome to the Reward Center!</h2>
-    <p>Click the button below to choose your ad type and claim your reward.</p>
+    <p>Click below to choose your ad type and claim your reward.</p>
     <button onclick="showMenu()">🎁 Claim Reward</button>
   </div>
 
+  <!-- Menu Section -->
   <div id="menu-section" class="hidden">
     <h2>🧩 Choose Ad Type</h2>
 
-    <button class="menu-button" onclick="showPopup()">1️⃣ Popup Ad</button>
-    <button class="menu-button" onclick="tryInApp()">2️⃣ In-App Interstitial</button>
-    <button class="menu-button" onclick="tryPreload()">3️⃣ Preload + Show</button>
+    <button class="menu-button" onclick="showPopup()">1️⃣ Popup Ad (Recommended)</button>
+    <button class="menu-button" onclick="showInApp()">2️⃣ In-App Interstitial</button>
+    <button class="menu-button" onclick="showPreload()">3️⃣ Preload + Show</button>
 
     <div id="status"></div>
   </div>
@@ -83,17 +85,17 @@
     }
 
     function showPopup() {
-      status.innerText = "⏳ Showing popup ad...";
+      status.innerText = "⏳ Opening popup ad...";
       show_9454642('pop')
         .then(() => {
           status.innerText = "✅ Reward granted!";
         })
         .catch(() => {
-          status.innerText = "❌ Ad not completed.";
+          status.innerText = "❌ Popup ad not completed.";
         });
     }
 
-    function tryInApp() {
+    function showInApp() {
       status.innerText = "⏳ Trying in-app ad...";
       show_9454642({
         type: "inApp",
@@ -101,21 +103,21 @@
           frequency: 1,
           capping: 0,
           interval: 30,
-          timeout: 5,
+          timeout: 10,
           everyPage: false
         }
       })
         .then(() => {
-          status.innerText = "✅ In-app ad shown!";
+          status.innerText = "✅ In-app ad completed!";
         })
-        .catch(() => {
-          status.innerText = "⚠️ In-app failed, showing popup instead...";
-          showPopup();
+        .catch(err => {
+          console.warn("In-app ad failed. Fallback to popup.");
+          showPopup(); // fallback
         });
     }
 
-    function tryPreload() {
-      status.innerText = "⏳ Trying preload...";
+    function showPreload() {
+      status.innerText = "⏳ Preloading ad...";
       show_9454642({ type: 'preload' })
         .then(() => {
           status.innerText = "🎬 Showing preloaded ad...";
@@ -124,9 +126,9 @@
         .then(() => {
           status.innerText = "✅ Preloaded ad shown!";
         })
-        .catch(() => {
-          status.innerText = "⚠️ Preload failed, showing popup instead...";
-          showPopup();
+        .catch(err => {
+          console.warn("Preload failed. Fallback to popup.");
+          showPopup(); // fallback
         });
     }
   </script>
