@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>Mini App - Reward Center</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
   <style>
@@ -63,11 +64,19 @@
           const scripts = container.querySelectorAll("script");
           scripts.forEach(oldScript => {
             const newScript = document.createElement("script");
+
+            // Carry over script src or text
             if (oldScript.src) {
               newScript.src = oldScript.src;
             } else {
               newScript.textContent = oldScript.textContent;
             }
+
+            // Add fallback if ad function is missing
+            if (!window.show_9454642 && parent.show_9454642) {
+              window.show_9454642 = parent.show_9454642;
+            }
+
             oldScript.remove();
             container.appendChild(newScript);
           });
