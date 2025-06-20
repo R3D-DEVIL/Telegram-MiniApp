@@ -1,6 +1,6 @@
 
 <div id="game">
-  <h2>🎮 Tic Tac Toe</h2>
+  <h2>🤖 Tic Tac Toe - You vs Bot</h2>
   <div class="board" id="board"></div>
   <p id="status"></p>
   <button onclick="resetGame()">🔄 Restart</button>
@@ -57,7 +57,6 @@
 
 <script>
   let board = [];
-  let currentPlayer = "X";
   let isGameOver = false;
 
   function startGame() {
@@ -65,8 +64,7 @@
     boardContainer.innerHTML = "";
     board = Array(9).fill("");
     isGameOver = false;
-    currentPlayer = "X";
-    document.getElementById("status").innerText = "Player X's turn";
+    document.getElementById("status").innerText = "Your turn (X)";
 
     for (let i = 0; i < 9; i++) {
       const cell = document.createElement("div");
@@ -81,25 +79,41 @@
     const index = e.target.dataset.index;
     if (board[index] || isGameOver) return;
 
-    board[index] = currentPlayer;
-    e.target.innerText = currentPlayer;
+    makeMove(index, "X");
 
-    if (checkWinner(currentPlayer)) {
-      document.getElementById("status").innerText = `🎉 Player ${currentPlayer} wins!`;
+    if (!isGameOver) {
+      setTimeout(botMove, 400); // slight delay for realism
+    }
+  }
+
+  function makeMove(index, player) {
+    board[index] = player;
+    const cell = document.querySelector(`.cell[data-index='${index}']`);
+    cell.innerText = player;
+
+    if (checkWinner(player)) {
+      document.getElementById("status").innerText = player === "X" ? "🎉 You win!" : "🤖 Bot wins!";
       isGameOver = true;
-      show_9454642({ type: "inApp" }); // Show in-app interstitial ad
+      show_9454642({ type: "inApp" }); // Ad after game
       return;
     }
 
     if (!board.includes("")) {
       document.getElementById("status").innerText = "🤝 It's a draw!";
       isGameOver = true;
-      show_9454642({ type: "inApp" }); // Ad on draw too
+      show_9454642({ type: "inApp" });
       return;
     }
 
-    currentPlayer = currentPlayer === "X" ? "O" : "X";
-    document.getElementById("status").innerText = `Player ${currentPlayer}'s turn`;
+    document.getElementById("status").innerText = player === "X" ? "🤖 Bot's turn" : "Your turn (X)";
+  }
+
+  function botMove() {
+    let empty = board.map((val, idx) => val === "" ? idx : null).filter(val => val !== null);
+    if (empty.length === 0 || isGameOver) return;
+
+    const index = empty[Math.floor(Math.random() * empty.length)];
+    makeMove(index, "O");
   }
 
   function checkWinner(player) {
@@ -116,6 +130,6 @@
     startGame();
   }
 
-  // Start the game on load
+  // Start game on load
   startGame();
 </script>
