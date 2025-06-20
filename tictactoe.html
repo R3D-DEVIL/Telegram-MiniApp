@@ -1,0 +1,21 @@
+<div>
+  <h2>❌⭕ Tic Tac Toe</h2>
+  <table style="margin: 0 auto;">
+    <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
+    <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
+    <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
+  </table>
+</div>
+<script>
+  let turn = 'X';
+  function play(cell) {
+    if (cell.textContent === '') {
+      cell.textContent = turn;
+      turn = turn === 'X' ? 'O' : 'X';
+    }
+    if ([...document.querySelectorAll('td')].every(td => td.textContent !== '')) {
+      alert("Game Over!");
+      showAdAfterUse();
+    }
+  }
+</script>
