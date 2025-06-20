@@ -103,14 +103,14 @@
       if (checkWinner(board, player)) {
         document.getElementById("status").innerText = player === "X" ? "🎉 You win!" : "🤖 Bot wins!";
         isGameOver = true;
-        triggerAd();
+        triggerAd(); // Show ad on win
         return;
       }
 
       if (!board.includes("")) {
         document.getElementById("status").innerText = "🤝 It's a draw!";
         isGameOver = true;
-        triggerAd();
+        triggerAd(); // Show ad on draw
         return;
       }
 
@@ -127,6 +127,7 @@
     }
 
     function resetGame() {
+      triggerAd(); // Show ad on restart
       startGame();
     }
 
