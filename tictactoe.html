@@ -1,54 +1,121 @@
-<div>
-  <h2>❌⭕ Tic Tac Toe</h2>
-  <table id="board" style="margin:auto; font-size:30px; border-collapse:collapse;">
-    <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
-    <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
-    <tr><td onclick="play(this)"></td><td onclick="play(this)"></td><td onclick="play(this)"></td></tr>
-  </table>
-  <p id="ttt-status"></p>
+
+<div id="game">
+  <h2>🎮 Tic Tac Toe</h2>
+  <div class="board" id="board"></div>
+  <p id="status"></p>
+  <button onclick="resetGame()">🔄 Restart</button>
 </div>
+
+<style>
+  #game {
+    max-width: 400px;
+    margin: auto;
+    font-family: sans-serif;
+    text-align: center;
+  }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    margin-top: 20px;
+  }
+
+  .cell {
+    width: 100px;
+    height: 100px;
+    background: #f0f0f0;
+    font-size: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 0 4px #ccc;
+    cursor: pointer;
+  }
+
+  .cell:hover {
+    background: #ddd;
+  }
+
+  button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+
+  #status {
+    font-size: 18px;
+    margin-top: 12px;
+  }
+</style>
+
 <script>
-  let turn = 'X';
-  function play(cell) {
-    if (cell.textContent || isGameOver()) return;
-    cell.textContent = turn;
-    if (checkWin(turn)) {
-      document.getElementById('ttt-status').textContent = `${turn} wins!`;
-      showAdInApp();
-    } else if (isBoardFull()) {
-      document.getElementById('ttt-status').textContent = `Draw!`;
-      showAdInApp();
-    } else {
-      turn = (turn === 'X') ? 'O' : 'X';
+  let board = [];
+  let currentPlayer = "X";
+  let isGameOver = false;
+
+  function startGame() {
+    const boardContainer = document.getElementById("board");
+    boardContainer.innerHTML = "";
+    board = Array(9).fill("");
+    isGameOver = false;
+    currentPlayer = "X";
+    document.getElementById("status").innerText = "Player X's turn";
+
+    for (let i = 0; i < 9; i++) {
+      const cell = document.createElement("div");
+      cell.classList.add("cell");
+      cell.dataset.index = i;
+      cell.addEventListener("click", handleMove);
+      boardContainer.appendChild(cell);
     }
   }
 
-  function isBoardFull() {
-    return [...document.querySelectorAll('#board td')].every(td => td.textContent);
+  function handleMove(e) {
+    const index = e.target.dataset.index;
+    if (board[index] || isGameOver) return;
+
+    board[index] = currentPlayer;
+    e.target.innerText = currentPlayer;
+
+    if (checkWinner(currentPlayer)) {
+      document.getElementById("status").innerText = `🎉 Player ${currentPlayer} wins!`;
+      isGameOver = true;
+      show_9454642({ type: "inApp" }); // Show in-app interstitial ad
+      return;
+    }
+
+    if (!board.includes("")) {
+      document.getElementById("status").innerText = "🤝 It's a draw!";
+      isGameOver = true;
+      show_9454642({ type: "inApp" }); // Ad on draw too
+      return;
+    }
+
+    currentPlayer = currentPlayer === "X" ? "O" : "X";
+    document.getElementById("status").innerText = `Player ${currentPlayer}'s turn`;
   }
 
-  function isGameOver() {
-    return !!document.getElementById('ttt-status').textContent;
+  function checkWinner(player) {
+    const wins = [
+      [0,1,2],[3,4,5],[6,7,8],
+      [0,3,6],[1,4,7],[2,5,8],
+      [0,4,8],[2,4,6]
+    ];
+
+    return wins.some(comb => comb.every(i => board[i] === player));
   }
 
-  function checkWin(player) {
-    const cells = [...document.querySelectorAll('#board td')].map(td => td.textContent);
-    const wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
-    return wins.some(combo => combo.every(i => cells[i] === player));
+  function resetGame() {
+    startGame();
   }
 
-  function showAdInApp() {
-    show_9454642({
-      type: 'inApp',
-      inAppSettings: {
-        frequency: 1,
-        capping: 0,
-        interval: 30,
-        timeout: 2,
-        everyPage: false
-      }
-    })
-    .then(() => console.log("In-app ad shown"))
-    .catch(e => document.getElementById("debug")?.textContent = "Ad failed: " + e);
-  }
+  // Start the game on load
+  startGame();
 </script>
