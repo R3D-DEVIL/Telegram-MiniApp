@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mini App - Claim Your Reward</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://libtl.com/sdk.js" data-zone="9454642" data-sdk="show_9454642"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      text-align: center;
+      padding: 40px;
+    }
+
+    h2 {
+      color: #333;
+      font-size: 28px;
+    }
+
+    p {
+      font-size: 18px;
+      color: #555;
+    }
+
+    button {
+      background-color: #0088cc;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0077b3;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #status {
+      margin-top: 20px;
+      font-size: 16px;
+      color: green;
+    }
+
+    .menu-button {
+      display: block;
+      margin: 15px auto;
+      width: 260px;
+    }
+  </style>
+</head>
+<body>
+  <div id="welcome-section">
+    <h2>🎉 Welcome to the Reward Center!</h2>
+    <p>Click the button below to choose your ad type and claim your reward.</p>
+    <button onclick="showMenu()">🎁 Claim Reward</button>
+  </div>
+
+  <div id="menu-section" class="hidden">
+    <h2>🧩 Choose Ad Type</h2>
+    <button class="menu-button" onclick="showPopup()">1️⃣ Popup Ad</button>
+    <button class="menu-button" onclick="tryInApp()">2️⃣ In-App Interstitial</button>
+    <button class="menu-button" onclick="tryPreload()">3️⃣ Preload + Show</button>
+    <div id="status"></div>
+  </div>
+
+  <script>
+    Telegram.WebApp.expand();
+    const status = document.getElementById("status");
+
+    function showMenu() {
+      document.getElementById("welcome-section").classList.add("hidden");
+      document.getElementById("menu-section").classList.remove("hidden");
+    }
+
+    function showPopup() {
+      status.textContent = "⏳ Showing popup ad...";
+      show_9454642('pop')
+        .then(() => {
+          status.textContent = "✅ Reward granted!";
+        })
+        .catch(() => {
+          status.textContent = "❌ Ad not completed or skipped.";
+        });
+    }
+
+    function tryInApp() {
+      status.textContent = "⏳ Trying in-app ad...";
+      show_9454642({
+        type: "inApp",
+        inAppSettings: {
+          frequency: 2,       // Up to 2 ads
+          capping: 0.1,       // Every 6 minutes
+          interval: 30,       // 30s between ads
+          timeout: 5,         // 5s delay before first ad
+          everyPage: false    // Continue session on navigation
+        }
+      })
+        .then(() => {
+          status.textContent = "✅ In-app ad shown!";
+        })
+        .catch(() => {
+          status.textContent = "⚠️ In-app failed, fallback to popup...";
+          showPopup();
+        });
+    }
+
+    function tryPreload() {
+      status.textContent = "⏳ Preloading ad...";
+      show_9454642({ type: 'preload' })
+        .then(() => {
+          status.textContent = "🎬 Preloaded. Now showing...";
+          return show_9454642();
+        })
+        .then(() => {
+          status.textContent = "✅ Preloaded ad completed!";
+        })
+        .catch(() => {
+          status.textContent = "⚠️ Preload failed, fallback to popup...";
+          showPopup();
+        });
+    }
+  </script>
+</body>
+</html>
