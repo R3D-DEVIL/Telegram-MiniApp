@@ -34,6 +34,9 @@
       padding: 12px;
       box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
       aspect-ratio: 0.8;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
 
     #display {
@@ -49,15 +52,16 @@
     }
 
     .keys {
+      flex-grow: 1;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: 1fr;
       gap: 6px;
     }
 
     .keys button {
-      width: 80%;
-      margin: 0 auto;
-      padding: 8px;
+      width: 100%;
+      height: 100%;
       font-size: 14px;
       border: none;
       border-radius: 8px;
@@ -107,7 +111,6 @@
 
       .keys button {
         font-size: 12px;
-        padding: 6px;
       }
     }
   </style>
