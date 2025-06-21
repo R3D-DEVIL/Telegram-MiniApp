@@ -44,14 +44,26 @@
 </head>
 <body>
   <h2>🛠️ Select a Tool</h2>
-  <button onclick="loadContent('calculator')">🧮 Calculator</button>
-  <button onclick="loadContent('tictactoe')">❌⭕ Tic Tac Toe</button>
-  <button onclick="loadContent('datecalculator')">📅 Date Calculator</button>
+  <button onclick="showAdThenLoad('calculator')">🧮 Calculator</button>
+  <button onclick="showAdThenLoad('tictactoe')">❌⭕ Tic Tac Toe</button>
+  <button onclick="showAdThenLoad('datecalculator')">📅 Date Calculator</button>
 
   <div id="content"></div>
 
   <script>
     Telegram.WebApp.expand();
+
+    function showAdThenLoad(page) {
+      // Show rewarded interstitial ad before loading content
+      show_9454642().then(() => {
+        alert('🎉 Thanks for watching the ad!');
+        loadContent(page);
+      }).catch((err) => {
+        console.warn('Ad skipped or failed:', err);
+        // Optional: Load tool anyway, or block access
+        loadContent(page);
+      });
+    }
 
     function loadContent(page) {
       fetch(`${page}.html`)
